@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Animations.qml</file>
+        <file>qml/LeftPanel.qml</file>
+        <file>qml/ListComponent.qml</file>
+        <file>qml/main.qml</file>
+        <file>qml/Presets.qml</file>
+        <file>qml/Settings.qml</file>
+        <file>qml/StatusPage.qml</file>
+        <file>qml/custom/VerticalSeparator.qml</file>
+        <file>images/done_icon.svg</file>
+        <file>images/appIcon.ico</file>
+        <file>qml/JWT.qml</file>
+        <file>qml/Cashbox.qml</file>
+        <file>qml/StatusWindow/StatusWindow.qml</file>
+        <file>qml/StatusWindow/CircleProgress.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>qml/ConfirmWindow/ConfirmWindow.qml</file>
+    </qresource>
+</RCC>
