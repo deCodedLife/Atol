@@ -22,6 +22,7 @@ public slots:
     void SendRequest(Request);
     void ChangeStatus(Task);
     void NextTask();
+    void ChangeRecieptCode(Task, QString);
 
 private slots:
     void updatePayments();

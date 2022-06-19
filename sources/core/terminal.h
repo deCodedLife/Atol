@@ -5,6 +5,7 @@
 #include <QThread>
 
 #include "terminalparser.h"
+#include "receiptparser.h"
 #include "types/daemon.h"
 #include "types/tobject.h"
 
@@ -20,6 +21,7 @@ signals:
     void timeout(QString);
     void gotError(QString);
     void succsess();
+    void codeDetected(QString);
 
 public slots:
     void Pay(double sum, OperationTypes);
@@ -37,5 +39,6 @@ private:
     QProcess *m_procces = new QProcess(this);
 
 private:
-    TerminalParser m_parser;
+    TerminalParser m_terminalParser;
+    ReceiptParser m_recieptParser;
 };

@@ -14,6 +14,7 @@ SOURCES += \
         sources/core/httpserver.cpp \
         sources/core/mewbas.cpp \
         sources/core/network.cpp \
+    sources/core/receiptparser.cpp \
         sources/core/server.cpp \
         sources/core/terminal.cpp \
     sources/core/terminalparser.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     sources/core/httpserver.h \
     sources/core/mewbas.h \
     sources/core/network.h \
+    sources/core/receiptparser.h \
     sources/core/server.h \
     sources/core/terminal.h \
     sources/core/terminalparser.h \

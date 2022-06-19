@@ -11,7 +11,8 @@ enum OperationTypes
     OPERATIONS_None = -1,
     OPERATIONS_Sale,
     OPERATIONS_Return,
-    OPERATIONS_Operation
+    OPERATIONS_Operation,
+    OPERATIONS_Cancel
 };
 
 enum Statuses
@@ -43,6 +44,7 @@ struct Task
 
     QString uuid;
     QString description;
+    QString returnCode;
 
     bool ePay;
     bool isOperation;

@@ -42,6 +42,7 @@ ApplicationWindow
         function onNewTask(task)
         {
             status.text = "Получена задача"
+            // TODO: Введите код на терминале
         }
     }
 
@@ -59,7 +60,16 @@ ApplicationWindow
         {
             status.text = SERVER.status
 
-            if (SERVER.status == "Печать чека")
+            if ( SERVER.status != SERVER.cashboxStatus && SERVER.status != SERVER.terminalStatus)
+            {
+                textStatus.visible = false
+            }
+            else
+            {
+                textStatus.visible = true
+            }
+
+            if ( SERVER.status == SERVER.cashboxStatus )
             {
                 cancel.visible = false
                 progress.arcEnd = 40
@@ -97,6 +107,7 @@ ApplicationWindow
 
                 Text
                 {
+                    id: textStatus
                     text: "Статус: "
                     font.pointSize: 14
                     font.bold: true

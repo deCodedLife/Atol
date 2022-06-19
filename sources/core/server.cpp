@@ -13,11 +13,14 @@ Server::Server(QObject *parent) : TObject(parent)
         {TASK_FAILED, Log{"SERVER", "ERROR", "Task failed", ""}},
         {ATOL_CASHBOX_ERROR, Log{"SERVER", "ERROR", "Got responce from cashbox", ""}}
     };
-    // connect(&worker, &HttpWorker::dataRecived, this, &Server::AtolRecived);
 
+#if (AUTO_CONFIRM)
+    connect(&worker, &HttpWorker::dataRecived, this, &Server::AtolRecived);
+#endif
     connect(&eCash, &Terminal::succsess, this, &Server::printCashcheck);
     connect(&eCash, &Terminal::timeout, this, &Server::OperationFailed);
     connect(&eCash, &Terminal::gotError, this, &Server::OperationFailed);
+    connect(&eCash, &Terminal::codeDetected, this, &Server::handleRecieptCode);
 
     connect(&net, &Network::dataRecived, this, &Server::GotResponse);
     connect(&net, &Network::timeout, this, &Server::OperationFailed);
@@ -28,8 +31,6 @@ Server::Server(QObject *parent) : TObject(parent)
     connect(&TimeoutDaemon, &Daemon::triggered, this, &Server::OperationFailed);
     connect(&EpayTimeout, &Daemon::triggered, &eCash, &Terminal::CheckStatus);
     connect(this, &Server::configsUpdated, &eCash, &Terminal::UpdateConfig);
-
-    // connect(&worker, &HttpWorker::dataRecived, this, &Server::AtolRecived);
 
     eCash.UpdateConfig(m_configuration);
 }
@@ -53,10 +54,18 @@ void Server::GotTask(QJsonObject data)
 
     if ( currentTask.ePay )
     {
-        currentStatus = "Оплата терминалом";
-        emit statusChanged(currentStatus);
+        if ( currentTask.type == OPERATIONS_Return )
+        {
+            currentStatus ="Введите код на терминале: " + currentTask.returnCode;
+        }
+        else
+        {
+            currentStatus = TERMINAL_STATUS;
+        }
 
         state = TERMINAL;
+        emit statusChanged(currentStatus);
+
         eCash.Pay( currentTask.ePaySum, currentTask.type );
         EpayTimeout.Reset();
 
@@ -73,7 +82,7 @@ void Server::printCashcheck()
 
     if (currentTask.isOperation == false)
     {
-        currentStatus = "Печать чека";
+        currentStatus = CASHBOX_STATUS;
         emit statusChanged(currentStatus);
     }
 
@@ -82,7 +91,10 @@ void Server::printCashcheck()
     Logger::WriteToFile(infoLog);
 
     net.Post(m_configuration.serverAddr + "/api/v2/requests", currentTask.task);
-    // worker.SetURL(m_configuration.serverAddr, {"api", "v2", "requests", currentTask.uuid});
+
+#if (AUTO_CONFIRM)
+    worker.SetURL(m_configuration.serverAddr, {"api", "v2", "requests", currentTask.uuid});
+#endif
 }
 
 void Server::cancelOperation()
@@ -101,6 +113,21 @@ void Server::cancelOperation()
     emit taskEnded();
 }
 
+void Server::handleRecieptCode(QString code)
+{
+    emit updateRecieptCode(currentTask, code);
+}
+
+QString Server::QMLcashboxStatus()
+{
+    return CASHBOX_STATUS;
+}
+
+QString Server::QMLterminalStatus()
+{
+    return TERMINAL_STATUS;
+}
+
 void Server::GotResponse(QString data)
 {
     Log atolLog;
@@ -111,14 +138,15 @@ void Server::GotResponse(QString data)
         atolLog = logList[ATOL_RESPOND];
         atolLog.details = data;
 
-        currentTask.status = TASK_SUCCSESS;
-        currentTask.description = "Ошибок нет";
+//        currentTask.status = TASK_SUCCSESS;
+//        currentTask.description = "Ошибок нет";
         Logger::WriteToFile(atolLog);
 
-        // worker.Stop();
-
-        emit taskEnded();
-        emit updateStatus(currentTask);
+#if (AUTO_CONFIRM)
+        worker.Stop();
+#endif
+//        emit taskEnded();
+//        emit updateStatus(currentTask);
 
         return;
     }
@@ -148,7 +176,7 @@ void Server::OperationFailed(QString description)
     cancelOperation();
 }
 
-void Server::AtolRecived(QString from, QJsonObject response)
+void Server::HttpWorkerRecived(QString from, QJsonObject response)
 {
     QList<QString> urlKeys = from.split('/');
 
@@ -162,8 +190,15 @@ void Server::AtolRecived(QString from, QJsonObject response)
         return;
     }
 
-    // worker.Stop();
+#if (AUTO_CONFIRM)
+    worker.Stop();
+#endif
 
+    AtolRecived(response);
+}
+
+void Server::AtolRecived(QJsonObject response)
+{
     QJsonArray results = response["results"].toArray();
     QJsonObject result = results[0].toObject()["error"].toObject();
 

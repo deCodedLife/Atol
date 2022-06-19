@@ -18,6 +18,7 @@ public:
     static Request GetPayments(QString cashbox_id, QString jwt = JWTs);
     static Request GetOperations(QString cashbox_id, QString jwt = JWTs);
     static Request StatusChange(int sale_id, QString status, QString description, QString jwt = JWTs);
+    static Request UpdateRecieptCode(int sale_id, QString code, QString jwt = JWTs);
 
 private:
 

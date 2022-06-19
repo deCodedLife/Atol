@@ -3,7 +3,8 @@
 enum OperationTypes
 {
     Sale,
-    Return
+    Return,
+    Cancel
 };
 
 class Payment

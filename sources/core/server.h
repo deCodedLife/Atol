@@ -1,5 +1,4 @@
-#ifndef SERVER_H
-#define SERVER_H
+#pragma once
 
 #include <QObject>
 
@@ -9,6 +8,10 @@
 
 #include "types/daemon.h"
 #include "types/tobject.h"
+
+#define AUTO_CONFIRM false
+#define CASHBOX_STATUS "Печать чека"
+#define TERMINAL_STATUS "Оплата терминалом"
 
 enum SERVER_STATES
 {
@@ -21,6 +24,9 @@ class Server : public TObject
 {
     Q_OBJECT
     Q_PROPERTY(QString status READ qmlGetStatus NOTIFY statusChanged)
+    Q_PROPERTY(QString cashboxStatus READ QMLcashboxStatus)
+    Q_PROPERTY(QString terminalStatus READ QMLterminalStatus)
+
 public:
     explicit Server(QObject *parent = nullptr);
 
@@ -32,6 +38,7 @@ public:
 
 signals:
     void updateStatus(Task);
+    void updateRecieptCode(Task, QString);
     void statusChanged(QString);
 
     void taskEnded();
@@ -41,21 +48,30 @@ public slots:
     void GotTask(QJsonObject);
     void GotResponse(QString);
     void OperationFailed(QString description);
-    void AtolRecived(QString from, QJsonObject);
+    void HttpWorkerRecived(QString from, QJsonObject);
+    void AtolRecived(QJsonObject);
 
 private slots:
     void printCashcheck();
     void cancelOperation();
+    void handleRecieptCode(QString);
+
+    QString QMLcashboxStatus();
+    QString QMLterminalStatus();
+
+private:
+    Task currentTask;
 
 private:
     Network net;
-    Task currentTask;
-
     Terminal eCash;
-    // HttpWorker worker;
 
+private:
     QString currentStatus;
     SERVER_STATES state;
-};
 
-#endif // SERVER_H
+private:
+#if (AUTO_CONFIRM)
+    HttpWorker worker;
+#endif
+};

@@ -17,7 +17,8 @@ enum GLOBAL_ERRORS
     ATOL_ERROR_RESPOND,
     TASK_FAILED,
     ATOL_CASHBOX_ERROR,
-    CANT_OPEN_FILE
+    CANT_OPEN_FILE,
+    CONTENT_IS_EMPTY
 };
 
 class TObject : public QObject

@@ -2,11 +2,12 @@
 
 Terminal::Terminal(QObject *parent) : TObject(parent)
 {
-    connect(this, &TObject::configsUpdated, &m_parser, [&] (Configuration configuration) {
-        m_parser.SetDirectory(configuration.terminalDir);
+    connect(this, &TObject::configsUpdated, &m_terminalParser, [&] (Configuration configuration) {
+        m_terminalParser.SetDirectory(configuration.terminalDir);
     });
+    connect(this, &Terminal::succsess, &m_recieptParser, &ReceiptParser::StartParsing);
+    connect(&m_recieptParser, &ReceiptParser::codeDetected, this, &Terminal::codeDetected);
 }
-
 
 void Terminal::Pay(double sum, OperationTypes type)
 {
@@ -16,13 +17,28 @@ void Terminal::Pay(double sum, OperationTypes type)
     QTime currentTime = QTime::currentTime();
     currentTime = currentTime.addSecs(-10);
 
-    m_parser.SetTarget({m_payment, currentTime, PAYMENT_NOTFOUND});
+    m_terminalParser.SetTarget({m_payment, currentTime, PAYMENT_NOTFOUND});
+    m_recieptParser.SetTarget(m_configuration.terminalDir + "/P");
 
     QStringList arguments;
     arguments.append(QString::number(m_payment));
 
     QString file = m_configuration.terminalDir;
-    file += type == OPERATIONS_Sale ? "/pay.bat" : "/return.bat";
+
+    if ( type == OPERATIONS_Sale )
+    {
+        file += "/pay.bat";
+    }
+
+    else if ( type == OPERATIONS_Cancel )
+    {
+        file += "/cancel.bat";
+    }
+
+    else if ( type == OPERATIONS_Return )
+    {
+        file += "/return.bat";
+    }
 
     QFile::remove(m_configuration.terminalDir + "/P");
 
@@ -69,7 +85,7 @@ void Terminal::CheckStatus()
     }
 
     m_timeOut--;
-    TPayment currentPayment = m_parser.Parse();
+    TPayment currentPayment = m_terminalParser.Parse();
 
     if ( currentPayment.Result == PAYMENT_NOTFOUND )
     {

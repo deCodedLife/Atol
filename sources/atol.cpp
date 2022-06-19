@@ -20,9 +20,13 @@ void Atol::ChangeConfiguration(Configs *c)
 
     connect(&core, &Server::updateStatus, &api, &Mewbas::ChangeStatus);
     connect(&core, &Server::skipped, &api, &Mewbas::NextTask);
+    connect(&core, &Server::updateRecieptCode, &api, &Mewbas::ChangeRecieptCode);
 
     connect(&api, &Mewbas::newTask, &core, &Server::GotTask);
-    //connect(&httpSrv, &HttpServer::recivedRequest, &core, &Server::AtolRecived);
+
+#if (AUTO_CONFIRM == false)
+    connect(&httpSrv, &HttpServer::recivedRequest, &core, &Server::AtolRecived);
+#endif
 
     connect(&m_tick, &Timer::timeout, &api.RequestDaemon, &Daemon::Countdown);
     connect(&m_tick, &Timer::timeout, &core.TimeoutDaemon, &Daemon::Countdown);

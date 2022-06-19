@@ -70,7 +70,22 @@ Task Task::parse(QJsonObject json)
         productsSum += item.price;
     }
 
-    recievedTask.type = secondRequest["type"].toString() == "sellReturn" ? OPERATIONS_Return : OPERATIONS_Sale;
+    if ( secondRequest["type"].toString() == "sell" )
+    {
+        recievedTask.type = OPERATIONS_Sale;
+    }
+
+    else if ( mewbassTask["sale_type"].toString() == "return" )
+    {
+        recievedTask.type = OPERATIONS_Return;
+        recievedTask.returnCode = mewbassTask["code_return"].toString();
+    }
+
+    else if ( mewbassTask["sale_type"].toString() == "cancel" )
+    {
+        recievedTask.type = OPERATIONS_Cancel;
+    }
+
     double paymentSum = {0};
 
     for ( QJsonValue paymentValue : payments )

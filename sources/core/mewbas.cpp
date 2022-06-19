@@ -43,6 +43,14 @@ void Mewbas::NextTask()
     m_currentTask = QJsonObject();
 }
 
+void Mewbas::ChangeRecieptCode(Task task, QString code)
+{
+    Request mewRequest = Request::UpdateRecieptCode(task.saleID, code);
+    mewRequest.ChangeJWT(m_configuration.jwt);
+
+    SendRequest(mewRequest);
+}
+
 void Mewbas::updatePayments()
 {
     if ( m_currentTask.isEmpty() == false )

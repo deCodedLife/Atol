@@ -110,3 +110,18 @@ Request Request::StatusChange(int sale_id, QString status, QString description, 
 
     return mewbasRequest;
 }
+
+Request Request::UpdateRecieptCode(int sale_id, QString code, QString jwt)
+{
+    QJsonObject requestData;
+    requestData["id"] = sale_id;
+    requestData["code_return"] = code;
+
+    Request mewbasRequest;
+    mewbasRequest.SetService("sales");
+    mewbasRequest.SetCommand("change");
+    mewbasRequest.SetData(requestData);
+    mewbasRequest.ChangeJWT(jwt);
+
+    return mewbasRequest;
+}
