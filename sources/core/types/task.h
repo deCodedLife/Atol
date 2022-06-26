@@ -56,5 +56,4 @@ struct Task
     Statuses status;
 
     static Task parse(QJsonObject);
-
 };

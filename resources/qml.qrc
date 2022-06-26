@@ -16,5 +16,6 @@
         <file>qml/StatusWindow/CircleProgress.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>qml/ConfirmWindow/ConfirmWindow.qml</file>
+        <file>qml/Reciepts.qml</file>
     </qresource>
 </RCC>

@@ -5,6 +5,7 @@
 
 #include "atol.h"
 #include "core/tray.h"
+#include "core/reciepts.h"
 #include "core/types/configs.h"
 
 int main(int argc, char *argv[])
@@ -18,7 +19,7 @@ int main(int argc, char *argv[])
 
     QObject::connect(&configs, &Configs::configsLoaded, _this, [&] (Configuration c)
     {
-        if (checked)
+        if ( checked )
         {
             return;
         }
@@ -33,6 +34,8 @@ int main(int argc, char *argv[])
         configs.Update(c.toJson());
         checked = true;
     });
+
+    Reciepts reciepts;
 
     Atol atol;
     atol.ChangeConfiguration(&configs);
@@ -53,6 +56,7 @@ int main(int argc, char *argv[])
     context->setContextProperty("CONFIGS", &configs);
     context->setContextProperty("MEWBAS", &atol.api);
     context->setContextProperty("SERVER", &atol.core);
+    context->setContextProperty("RECIEPTS", &reciepts);
 
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 

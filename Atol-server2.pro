@@ -15,6 +15,8 @@ SOURCES += \
         sources/core/mewbas.cpp \
         sources/core/network.cpp \
     sources/core/receiptparser.cpp \
+    sources/core/recieptlogger.cpp \
+    sources/core/reciepts.cpp \
         sources/core/server.cpp \
         sources/core/terminal.cpp \
     sources/core/terminalparser.cpp \
@@ -46,6 +48,8 @@ HEADERS += \
     sources/core/mewbas.h \
     sources/core/network.h \
     sources/core/receiptparser.h \
+    sources/core/recieptlogger.h \
+    sources/core/reciepts.h \
     sources/core/server.h \
     sources/core/terminal.h \
     sources/core/terminalparser.h \
