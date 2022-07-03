@@ -17,5 +17,9 @@
         <file>qtquickcontrols2.conf</file>
         <file>qml/ConfirmWindow/ConfirmWindow.qml</file>
         <file>qml/Reciepts.qml</file>
+        <file>qml/custom/Reciept.qml</file>
+        <file>images/close_icon.svg</file>
+        <file>qml/ReturnOptions.qml</file>
+        <file>images/search_icon.svg</file>
     </qresource>
 </RCC>

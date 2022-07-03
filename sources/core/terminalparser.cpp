@@ -18,28 +18,9 @@ void TerminalParser::SetTarget(TPayment payment)
 
 void TerminalParser::SetDirectory(QString folder)
 {
+    QString logID = QDate::currentDate().toString("yyMM");
+    m_lastLog = folder.append("/sbkernel").append(logID).append(".log");
     m_terminalFolder = folder;
-
-    QDir terminalDir(m_terminalFolder);
-    QStringList fileList = terminalDir.entryList(QStringList() << "sbkernel*.log", QDir::Files);
-
-    unsigned int lastLogID = 0;
-
-    for (QString logFile : fileList)
-    {
-        QStringList fileNameSplitted = logFile.split("sbkernel");
-        QString filePreffix = fileNameSplitted.last();
-
-        fileNameSplitted = filePreffix.split(".log");
-        QString fileID = fileNameSplitted.first();
-
-        if (fileID.toUInt() > lastLogID)
-        {
-            lastLogID = fileID.toUInt();
-        }
-    }
-
-    m_lastLog = folder + "/sbkernel" + QString::number(lastLogID) + ".log";
 }
 
 TPayment TerminalParser::Parse()

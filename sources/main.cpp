@@ -19,6 +19,8 @@ int main(int argc, char *argv[])
 
     QObject::connect(&configs, &Configs::configsLoaded, _this, [&] (Configuration c)
     {
+        qDebug() << "Configs initialized succsessefull";
+
         if ( checked )
         {
             return;
@@ -34,8 +36,6 @@ int main(int argc, char *argv[])
         configs.Update(c.toJson());
         checked = true;
     });
-
-    Reciepts reciepts;
 
     Atol atol;
     atol.ChangeConfiguration(&configs);
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     context->setContextProperty("CONFIGS", &configs);
     context->setContextProperty("MEWBAS", &atol.api);
     context->setContextProperty("SERVER", &atol.core);
-    context->setContextProperty("RECIEPTS", &reciepts);
+    context->setContextProperty("RECIEPTS", &atol.reciepts);
 
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 

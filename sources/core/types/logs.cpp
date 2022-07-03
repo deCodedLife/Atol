@@ -7,7 +7,7 @@ void Logger::WriteToFile(Log data)
     QFile fileInstance = QFile(LOG_FILE);
     fileInstance.open(QIODevice::WriteOnly | QIODevice::Append);
 
-    if (fileInstance.isOpen() == false)
+    if ( fileInstance.isOpen() == false )
     {
         qCritical() << "ERROR: Can't open log file. Reason" << fileInstance.errorString();
         //quick_exit(-2);
@@ -27,7 +27,7 @@ void Logger::WriteToFile(Log data)
 
     logString.append(data.data);
 
-    if (data.details.trimmed().isEmpty() == false)
+    if ( data.details.trimmed().isEmpty() == false )
     {
         logString.append(SEPARATOR);
 

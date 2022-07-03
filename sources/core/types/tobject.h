@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QObject>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 #include "logs.h"
 #include "task.h"

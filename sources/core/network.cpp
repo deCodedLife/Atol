@@ -17,6 +17,13 @@ void Network::Get(QString uri)
     netMgr->get(netRequest);
 }
 
+void Network::Delete(QString uri)
+{
+    isFinished = false;
+    netRequest.setUrl(QUrl(uri));
+    netMgr->deleteResource(netRequest);
+}
+
 void Network::Post(QString uri, QJsonObject data)
 {
     isFinished = false;
@@ -41,6 +48,23 @@ void Network::GetSync(QString uri)
 
     request->setUrl(QUrl(uri));
     mgr->get(netRequest);
+
+    connect(mgr, SIGNAL(finished(QNetworkReply*)), loop, SLOT(quit()));
+    connect(mgr, &QNetworkAccessManager::finished, this, &Network::gotData);
+
+    loop->exec();
+}
+
+void Network::DeleteSync(QString uri)
+{
+    isFinished = false;
+    QEventLoop *loop = new QEventLoop();
+
+    QNetworkRequest *request = new QNetworkRequest();
+    QNetworkAccessManager *mgr = new QNetworkAccessManager();
+
+    request->setUrl(QUrl(uri));
+    mgr->deleteResource(netRequest);
 
     connect(mgr, SIGNAL(finished(QNetworkReply*)), loop, SLOT(quit()));
     connect(mgr, &QNetworkAccessManager::finished, this, &Network::gotData);

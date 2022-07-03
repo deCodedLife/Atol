@@ -4,7 +4,8 @@ import QtQuick.Controls 2.5
 
 import "StatusWindow"
 
-ApplicationWindow {
+ApplicationWindow
+{
     id: application
     title: qsTr("Atol Server")
 
@@ -14,6 +15,7 @@ ApplicationWindow {
     visible: false
 
     property var pages: [
+        "Reciepts.qml",
         "JWT.qml",
         "Settings.qml",
         "Service.qml"
@@ -85,7 +87,7 @@ ApplicationWindow {
 
         active: true
         asynchronous: true
-        source: "Cashbox.qml"
+        source: "Reciepts.qml"
     }
 
     Animations

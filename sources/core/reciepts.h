@@ -1,6 +1,8 @@
 #pragma once
 
+#include <QDateTime>
 #include <QJsonObject>
+#include <QDirIterator>
 
 #include "network.h"
 #include "types/tobject.h"
@@ -13,19 +15,21 @@ class Reciepts : public TObject
 
 signals:
     void recieptsChanged(QList<QJsonObject>);
-    void removed(int);
 
 public:
     Reciepts(QObject *parent = nullptr);
 
-    Q_INVOKABLE void remove(int);
+    Q_INVOKABLE void remove(QJsonObject);
+    Q_INVOKABLE void qmlReturnEpay(QJsonObject);
+    
     QList<QJsonObject> QMLReciepts();
 
 public slots:
     void HandleReciept(Task t);
 
 private:
-    void LoadReciepts();
+    void loadReciepts();
+    int search(QJsonObject task);
 
 private:
     Network net;

@@ -11,6 +11,13 @@ Item
 
     property var tiles: [
         {
+            title: "Операции",
+            callback: () => {
+                pload.setSource("Reciepts.qml")
+            },
+            enabled: true
+        },
+        {
             title: "Касса",
             callback: () => {
                 pload.setSource("Cashbox.qml")

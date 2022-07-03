@@ -6,14 +6,7 @@ RecieptLogger::RecieptLogger(QObject *parent) : TObject(parent)
         {OPEN_FILE_ERROR, Log{"RecieptLogger", "ERROR", "Can't write reciept", ""}}
     };
 
-    QString logPath = QDir::currentPath();
-    logPath.append('/');
-    logPath.append(LOG_FOLDER);
-
-    if ( QDir().exists(logPath) == false )
-    {
-        QDir().mkdir(logPath);
-    }
+    connect(this, &RecieptLogger::configsUpdated, this, &RecieptLogger::init);
 }
 
 void RecieptLogger::HandleReciept(QJsonObject task)
@@ -22,7 +15,12 @@ void RecieptLogger::HandleReciept(QJsonObject task)
     QString taskName = task["uuid"].toString().toUtf8().toHex();
 
     fileName.append('/');
-    fileName.append(fileName.append(".json"));
+    fileName.append(taskName).append(".txt");
+
+    if (QFile::exists(fileName))
+    {
+        QFile::remove(fileName);
+    }
 
     QFile file(fileName);
     file.open(QIODevice::WriteOnly);
@@ -36,13 +34,26 @@ void RecieptLogger::HandleReciept(QJsonObject task)
         return;
     }
 
-    QDataStream output(&file);
-    output << task;
+    QTextStream output(&file);
+    output << QJsonDocument(task).toJson();
 
     file.close();
 }
 
+void RecieptLogger::init()
+{
+    QString logPath = QDir::currentPath();
+    logPath.append('/');
+    logPath.append(LOG_FOLDER);
+
+    if ( QDir().exists(logPath) == false )
+    {
+        QDir().mkdir(logPath);
+    }
+}
+
 QString RecieptLogger::getLogPath()
 {
-    return QDir::currentPath().append('/').append(LOG_FOLDER);
+//    return QDir::currentPath().append('/').append(LOG_FOLDER);
+    return LOG_FOLDER;
 }

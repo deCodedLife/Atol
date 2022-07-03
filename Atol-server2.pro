@@ -4,6 +4,7 @@ CONFIG += c++11
 CONFIG += qtquickcompiler
 CONFIG += static
 LIBS += -lodbc32
+# QMAKE_CXXFLAGS += -MP
 
 RC_ICONS += resources/images/appIcon.ico
 # QMAKE_LFLAGS_WINDOWS += "/MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\""

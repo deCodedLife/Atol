@@ -35,6 +35,7 @@ public:
 
     Q_INVOKABLE QString qmlGetStatus();
     Q_INVOKABLE void qmlCancelOperation();
+    Q_INVOKABLE void qmlReturnEpay(double sum);
 
 signals:
     void updateStatus(Task);
@@ -53,6 +54,7 @@ public slots:
 
 private slots:
     void printCashcheck();
+    void cancelPrint();
     void cancelOperation();
     void handleRecieptCode(QString);
 

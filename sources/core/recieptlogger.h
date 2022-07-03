@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QDateTime>
 #include "types/tobject.h"
 
 #define LOG_FOLDER "reciepts"
@@ -13,6 +14,9 @@ public:
 
 public slots:
     void HandleReciept(QJsonObject);
+
+private slots:
+    void init();
 
 private:
     QJsonObject prepareTask(Task);

@@ -4,6 +4,7 @@
 
 #include "core/mewbas.h"
 #include "core/server.h"
+#include "core/reciepts.h"
 #include "core/httpserver.h"
 #include "core/jwt.h"
 
@@ -18,6 +19,7 @@ public:
 
     Mewbas api;
     Server core;
+    Reciepts reciepts;
 
 public slots:
     void Ready();

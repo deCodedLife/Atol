@@ -24,9 +24,11 @@ public:
 
     void Get(QString uri);
     void Post(QString uri, QJsonObject data);
+    void Delete(QString uri);
 
     void GetSync(QString uri);
     void PostSync(QString uri, QJsonObject data);
+    void DeleteSync(QString uri);
 
     void Abort();
 

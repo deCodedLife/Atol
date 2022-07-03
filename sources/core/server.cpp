@@ -2,7 +2,7 @@
 
 Server::Server(QObject *parent) : TObject(parent)
 {
-    TimeoutDaemon.SetTicks(40);
+    TimeoutDaemon.SetTicks(15);
     EpayTimeout.SetTicks(1);
 
     logList = QMap<GLOBAL_ERRORS, Log> {
@@ -29,10 +29,21 @@ Server::Server(QObject *parent) : TObject(parent)
     connect(this, &Server::taskEnded, &TimeoutDaemon, &Daemon::Stop);
 
     connect(&TimeoutDaemon, &Daemon::triggered, this, &Server::OperationFailed);
+    connect(&TimeoutDaemon, &Daemon::triggered, this, &Server::cancelPrint);
     connect(&EpayTimeout, &Daemon::triggered, &eCash, &Terminal::CheckStatus);
     connect(this, &Server::configsUpdated, &eCash, &Terminal::UpdateConfig);
 
     eCash.UpdateConfig(m_configuration);
+}
+
+void Server::qmlReturnEpay(double sum)
+{
+    eCash.Pay(sum, OPERATIONS_Return);
+}
+
+void Server::cancelPrint()
+{
+    net.Delete(m_configuration.serverAddr + "/api/v2/requests/" + currentTask.uuid);
 }
 
 QString Server::qmlGetStatus()
@@ -138,15 +149,11 @@ void Server::GotResponse(QString data)
         atolLog = logList[ATOL_RESPOND];
         atolLog.details = data;
 
-//        currentTask.status = TASK_SUCCSESS;
-//        currentTask.description = "Ошибок нет";
         Logger::WriteToFile(atolLog);
 
 #if (AUTO_CONFIRM)
         worker.Stop();
 #endif
-//        emit taskEnded();
-//        emit updateStatus(currentTask);
 
         return;
     }

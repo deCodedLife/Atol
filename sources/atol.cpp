@@ -17,8 +17,10 @@ void Atol::ChangeConfiguration(Configs *c)
     connect(cfg, &Configs::configsLoaded, &api, &Mewbas::UpdateConfig);
     connect(cfg, &Configs::configsLoaded, &core, &Server::UpdateConfig);
     connect(cfg, &Configs::configsLoaded, &jwt, &JWT::SetConfiguration);
+    connect(cfg, &Configs::configsLoaded, &reciepts, &Reciepts::UpdateConfig);
 
     connect(&core, &Server::updateStatus, &api, &Mewbas::ChangeStatus);
+    connect(&core, &Server::updateStatus, &reciepts, &Reciepts::HandleReciept);
     connect(&core, &Server::skipped, &api, &Mewbas::NextTask);
     connect(&core, &Server::updateRecieptCode, &api, &Mewbas::ChangeRecieptCode);
 
