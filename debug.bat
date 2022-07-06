@@ -24,7 +24,7 @@ cd %BUILD_DIR%
 %MINGW_BUILD% -j4
 
 echo ------------------------------------------------------------
-cd "E:\Qt_bin\6.3.0\mingw_64\bin"
+ "E:\Qt_bin\6.3.0\mingw_64\bin"
 call "D:\Workflow\build-Atol-server2-Desktop_Qt_6_3_0_MinGW_64_bit-Debug\debug\Atol-server2.exe"
 echo ------------------------------------------------------------
 

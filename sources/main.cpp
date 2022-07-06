@@ -19,12 +19,12 @@ int main(int argc, char *argv[])
 
     QObject::connect(&configs, &Configs::configsLoaded, _this, [&] (Configuration c)
     {
-        qDebug() << "Configs initialized succsessefull";
-
         if ( checked )
         {
             return;
         }
+
+        qDebug() << "Configs initialized succsessefull";
 
         QDir::setCurrent(c.installPath);
 

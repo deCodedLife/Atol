@@ -3,7 +3,7 @@
 #include <QDateTime>
 #include "types/tobject.h"
 
-#define LOG_FOLDER "reciepts"
+#define LOG_FOLDER "receipts"
 
 class RecieptLogger : public TObject
 {

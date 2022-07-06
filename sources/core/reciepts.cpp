@@ -86,6 +86,11 @@ void Reciepts::loadReciepts()
             continue;
         }
 
+        if ( reciept["request"].toObject()["type"].toString() == "reportX" )
+        {
+            continue;
+        }
+
         m_reciepts.append(reciept);
         logFile.close();
     }

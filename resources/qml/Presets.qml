@@ -14,8 +14,9 @@ Item
     property int defaultHeight: 48
 
     // Colors
-    property string accentColor: Qt.rgba(.8, 0, 0, 1)
-    property string secondColor: Qt.rgba(.6, 0, 0, 1)
+    property string accentColor: "#a30015"
+    property string secondColor: "#bd2d87"
+    property string thirdColor: "#d664be"
 
     // Text
     property string textColor: "black"

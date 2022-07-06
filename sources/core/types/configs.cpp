@@ -54,8 +54,8 @@ void Configs::Read()
     configsJson[PARAM_SERVER_ADDRESS] = configs.value(PARAM_SERVER_ADDRESS, PARAM_SERVER_ADDRESS).toString();
     configsJson[PARAM_TERMINAL_DIR] = configs.value(PARAM_TERMINAL_DIR, TERMINAL_DIR).toString();
     configsJson[PARAM_JWT] = configs.value(PARAM_JWT, "").toString();
-    configsJson[PARAM_JWT_USERNAME] = configs.value(JWT_USERNAME, JWT_USERNAME).toString();
-    configsJson[PARAM_JWT_PASSWORD] = configs.value(JWT_PASSWORD, JWT_PASSWORD).toString();
+    configsJson[PARAM_JWT_USERNAME] = configs.value(PARAM_JWT_USERNAME, JWT_USERNAME).toString();
+    configsJson[PARAM_JWT_PASSWORD] = configs.value(PARAM_JWT_PASSWORD, JWT_PASSWORD).toString();
     configsJson[PARAM_AUTOSTART] = configs.value(PARAM_AUTOSTART, AUTOSTART).toBool();
     configsJson[PARAM_INSTALL_PATH] = configs.value(PARAM_INSTALL_PATH, QDir().currentPath()).toString();
     configsJson[PARAM_APP_EXECUTABLE] = configs.value(PARAM_APP_EXECUTABLE, "Atol-server2.exe").toString();
@@ -89,7 +89,8 @@ void Configs::Update(QJsonObject newConfiguration)
         return;
     }
 
-    write(Configuration::fromJson(newConfiguration));
+    lastUpdated = Configuration::fromJson(newConfiguration);
+    write(lastUpdated);
 }
 
 void Configs::switchAutostart(QJsonObject c)

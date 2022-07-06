@@ -64,10 +64,15 @@ Task Task::parse(QJsonObject json)
     QJsonObject secondRequest = mewbassRequest["request"].toObject();
     QJsonArray payments = secondRequest["payments"].toArray();
 
-    for (QJsonValue itemJson : secondRequest["items"].toArray())
+    if ( secondRequest["items"].toArray().count() == 1 )
+    {
+        recievedTask.isValid = false;
+    }
+
+    for ( QJsonValue itemJson : secondRequest["items"].toArray() )
     {
         Product item = Product::parse(itemJson);
-        productsSum += item.price;
+        productsSum += item.amount;
     }
 
     if ( secondRequest["type"].toString() == "sell" )

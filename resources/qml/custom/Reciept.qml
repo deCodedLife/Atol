@@ -13,14 +13,31 @@ Item
     
     visible: task["active"]
     enabled: task["active"]
+    isEven: false
 
     signal clicked
     // property string textColor: task["status"] == "done" ? Qt.rgba(0.7, 0.7, 0.7, 1) : "white"
 
+    function backgroundColor()
+    {
+        if ( task["status"] != "done" )
+        {
+            return presets.secondColor
+        }
+
+        if ( isEven )
+        {
+            return presets.thirdColor
+        }
+
+        return Qt.rgba(0,0,0,0)
+    }
+
     Rectangle
     {
         anchors.fill: parent
-        color: task["status"] == "done" ? Qt.rgba(0,0,0,0) : "#80ff5959"
+        color: backgroundColor()
+
 
         RowLayout
         {
