@@ -30,11 +30,16 @@ void Mewbas::ChangeStatus(Task task)
 
     QString status;
     status = task.status == TASK_SUCCSESS ? "done" : "error";
+    Request mewRequest;
 
-    Request mewRequest = Request::StatusChange(task.saleID, status, task.description);
-    mewRequest.ChangeJWT(m_configuration.jwt);
+    foreach( int saleID, task.sales )
+    {
+        mewRequest = Request::StatusChange(saleID, status, task.description);
+        mewRequest.ChangeJWT(m_configuration.jwt);
+    
+        SendRequest( mewRequest );
+    }
 
-    SendRequest( mewRequest );
     NextTask();
 }
 
@@ -44,11 +49,16 @@ void Mewbas::NextTask()
 }
 
 void Mewbas::ChangeRecieptCode(Task task, QString code)
-{
-    Request mewRequest = Request::UpdateRecieptCode(task.saleID, code);
-    mewRequest.ChangeJWT(m_configuration.jwt);
+{    
+    Request mewRequest;
 
-    SendRequest(mewRequest);
+    foreach( int saleID, task.sales )
+    {
+        mewRequest = Request::UpdateRecieptCode(saleID, code);
+        mewRequest.ChangeJWT(m_configuration.jwt);
+    
+        SendRequest(mewRequest);
+    }
 }
 
 void Mewbas::updatePayments()
@@ -89,7 +99,6 @@ bool Mewbas::exists(QJsonObject data)
             return true;
         }
     }
-    // Garbage code
 
     m_queue.append(current);
     return false;
@@ -130,12 +139,12 @@ void Mewbas::gotData(QString data)
     if ( mewbasResponse["data"].isArray() ) return;
     if ( mewbasResponse["data"].toBool() == true && mewbasResponse["data"].toObject().isEmpty() ) return;
 
-    if (m_currentTask.isEmpty() == false || exists(mewbasResponse))
+    if ( m_currentTask.isEmpty() == false || exists(mewbasResponse) )
     {
         return;
     }
 
-    if (Task::parse(mewbasResponse).isValid == false)
+    if ( Task::parse(mewbasResponse).isValid == false )
     {
         return;
     }

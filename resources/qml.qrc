@@ -1,25 +1,25 @@
 <RCC>
     <qresource prefix="/">
-        <file>qml/Animations.qml</file>
-        <file>qml/LeftPanel.qml</file>
-        <file>qml/ListComponent.qml</file>
-        <file>qml/main.qml</file>
+        <file>qml/Custom/LeftPanel.qml</file>
+        <file>qml/Custom/ListComponent.qml</file>
+        <file>qml/Custom/VerticalSeparator.qml</file>
+        <file>qml/Custom/Receipt.qml</file>
+        <file>qml/Custom/CircleProgress.qml</file>
+        <file>qml/Windows/ReturnOptions.qml</file>
+        <file>qml/Windows/ConfirmWindow.qml</file>
+        <file>qml/Windows/StatusWindow.qml</file>
+        <file>qml/Pages/Receipts.qml</file>
+        <file>qml/Pages/Settings.qml</file>
+        <file>qml/Pages/JWT.qml</file>
+        <file>qml/Pages/Cashbox.qml</file>
+        <file>qtquickcontrols2.conf</file>
         <file>qml/Presets.qml</file>
-        <file>qml/Settings.qml</file>
-        <file>qml/StatusPage.qml</file>
-        <file>qml/custom/VerticalSeparator.qml</file>
+        <file>qml/main.qml</file>
+        <file>images/close_icon.svg</file>
         <file>images/done_icon.svg</file>
         <file>images/appIcon.ico</file>
-        <file>qml/JWT.qml</file>
-        <file>qml/Cashbox.qml</file>
-        <file>qml/StatusWindow/StatusWindow.qml</file>
-        <file>qml/StatusWindow/CircleProgress.qml</file>
-        <file>qtquickcontrols2.conf</file>
-        <file>qml/ConfirmWindow/ConfirmWindow.qml</file>
-        <file>qml/Reciepts.qml</file>
-        <file>qml/custom/Reciept.qml</file>
-        <file>images/close_icon.svg</file>
-        <file>qml/ReturnOptions.qml</file>
         <file>images/search_icon.svg</file>
+        <file>images/settings.svg</file>
+        <file>images/menu_icon.svg</file>
     </qresource>
 </RCC>

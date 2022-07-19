@@ -68,13 +68,15 @@ Request Request::GetPayments(QString cashbox_id, QString jwt)
     QJsonObject requestData;
     requestData["cashbox_id"] = cashbox_id;
 
-#ifdef QT_DEBUG
-    requestData["test"] = true;
-#endif
-
     Request mewbasRequest;
     mewbasRequest.SetService("atol");
-    mewbasRequest.SetCommand("getPayments");
+
+#ifdef QT_DEBUG
+    mewbasRequest.SetCommand("getPayments_beta");
+#else
+    mewbasRequest.SetCommand("getPayments_beta");
+#endif
+
     mewbasRequest.SetData(requestData);
     mewbasRequest.ChangeJWT(jwt);
 

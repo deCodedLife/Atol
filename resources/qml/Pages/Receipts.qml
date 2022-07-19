@@ -3,15 +3,15 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Material
 
-import "custom"
+import Presets
+import "../Custom"
+import "../Windows"
 
 Item
 {
     id: root
 
     anchors.fill: parent
-
-    property Animations defaultAnimations: parent.standartAnimations
     property var configs: CONFIGS.data
     property var allReciepts: RECIEPTS.reciepts
     property var visibleReciepts: [{}]
@@ -52,23 +52,26 @@ Item
     ColumnLayout
     {
         anchors.fill: parent
+        spacing: 0
 
         Rectangle
         {
             Layout.fillWidth: true
-            height: presets.defaultHeight
-            color: presets.accentColor
+            height: Presets.defaultHeight
+            color: Presets.accentColor
 
             RowLayout
             {
                 anchors.fill: parent
-                anchors.margins: presets.defaultMargin
+                anchors.margins: Presets.defaultMargin
 
                 Text
                 {
+                    Layout.fillWidth: true
                     text: "Последние операции"
-                    color: presets.highlited
-                    font.pointSize: presets.h2
+                    color: Presets.highlited
+
+                    font.pointSize: Presets.h2
                     font.bold: true
                 }
 
@@ -84,10 +87,13 @@ Item
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
+                    placeholderText: "Сумма или время"
+                    maximumLength: 32
+
                     leftPadding: 42
                     bottomPadding: 8
 
-                    font.pointSize: presets.h4
+                    font.pointSize: Presets.h4
                     background: Rectangle
                     {
                         radius: 5
@@ -153,11 +159,12 @@ Item
             Layout.fillHeight: true
 
             model: visibleReciepts
-            delegate: Reciept
+            delegate: Receipt
             {
                 width: parent.width
-                height: presets.defaultHeight
+                height: Presets.defaultHeight + 10
                 task: modelData
+                isEven: index % 2 == 0 ? true : false
 
                 onClicked:
                 {
@@ -178,10 +185,5 @@ Item
         })
 
         return sum
-    }
-
-    Presets
-    {
-        id: presets
     }
 }

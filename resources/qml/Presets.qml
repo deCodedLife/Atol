@@ -1,3 +1,5 @@
+pragma Singleton
+
 import QtQuick
 import QtQuick.Controls.Material
 
@@ -7,16 +9,17 @@ Item
 
     // Controls configs
     Material.theme: Material.Light
-    Material.accent: Material.Red
+    Material.accent: Material.Teal
 
     // Padding
     property int defaultMargin: 5
     property int defaultHeight: 48
 
     // Colors
-    property string accentColor: "#a30015"
-    property string secondColor: "#bd2d87"
-    property string thirdColor: "#d664be"
+    property string accentColor: "#476A6F"
+    property string secondColor: "#519E8A"
+    property string thirdColor: "#7EB09B"
+    property string redColor: "#DE7928"
 
     // Text
     property string textColor: "black"

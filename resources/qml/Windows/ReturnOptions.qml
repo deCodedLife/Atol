@@ -3,6 +3,8 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Material
 
+import Presets
+
 ApplicationWindow
 {
     id: root
@@ -24,7 +26,7 @@ ApplicationWindow
     color: Qt.rgba(0, 0, 0, 0)
 
     Material.theme: Material.Light
-    Material.accent: Material.Red
+    Material.accent: Material.Teal
 
     property var task: [{}]
     property double ePaySum: getEpaySum(task)
@@ -90,10 +92,5 @@ ApplicationWindow
         })
 
         return sum
-    }
-
-    Presets
-    {
-        id: presets
     }
 }

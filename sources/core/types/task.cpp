@@ -36,7 +36,7 @@ Task Task::parse(QJsonObject json)
     recievedTask.uuid = mewbassRequest["uuid"].toString();
     callback["resultUrl"] = CALLBACK_URL;
 
-    if ( mewbassTask["sale_id"].isNull()  )
+    if ( mewbassTask["sales"].toArray().isEmpty() )
     {
         // OPERATION
         QJsonObject customTask;
@@ -58,6 +58,12 @@ Task Task::parse(QJsonObject json)
     // TASK
     double productsSum {0};
     recievedTask.saleID = mewbassTask["sale_id"].toString().toInt();
+
+    foreach( QJsonValue sale, mewbassTask["sales"].toArray() ) 
+    {
+        recievedTask.sales.append( sale.toInt() );
+    }
+
     recievedTask.task = mewbassRequest;
     recievedTask.task["callbacks"] = callback;
 
@@ -69,7 +75,7 @@ Task Task::parse(QJsonObject json)
         recievedTask.isValid = false;
     }
 
-    for ( QJsonValue itemJson : secondRequest["items"].toArray() )
+    foreach ( QJsonValue itemJson, secondRequest["items"].toArray() )
     {
         Product item = Product::parse(itemJson);
         productsSum += item.amount;
@@ -93,7 +99,7 @@ Task Task::parse(QJsonObject json)
 
     double paymentSum = {0};
 
-    for ( QJsonValue paymentValue : payments )
+    foreach ( QJsonValue paymentValue, payments )
     {
         QJsonObject payment = paymentValue.toObject();
         paymentSum += payment["sum"].toDouble();

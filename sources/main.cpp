@@ -2,6 +2,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QSharedMemory>
+#include <QMessageBox>
 
 #include "atol.h"
 #include "core/tray.h"
@@ -16,6 +18,22 @@ int main(int argc, char *argv[])
     QObject *_this = new QObject;
 
     QApplication app(argc, argv);
+    QSharedMemory *shared = new QSharedMemory("Atol-Server");
+
+    if ( shared->create( 512, QSharedMemory::ReadWrite ) == false )
+    {
+        qDebug() << "Multiple instances are not allowed!";
+
+        QMessageBox errorMessage;
+
+        errorMessage.addButton(QMessageBox::Ok);
+        errorMessage.setWindowTitle(QObject::tr("Ошибка"));
+
+        errorMessage.setText(QObject::tr("Приложение уже запущено"));
+        errorMessage.exec();
+
+        exit(0);
+    }
 
     QObject::connect(&configs, &Configs::configsLoaded, _this, [&] (Configuration c)
     {
@@ -57,6 +75,7 @@ int main(int argc, char *argv[])
     context->setContextProperty("MEWBAS", &atol.api);
     context->setContextProperty("SERVER", &atol.core);
     context->setContextProperty("RECIEPTS", &atol.reciepts);
+    qmlRegisterSingletonType(QUrl("qrc:/qml/Presets.qml"), "Presets", 1, 0, "Presets");
 
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 

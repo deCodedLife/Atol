@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QJsonArray>
+#include <QJsonValue>
 #include <QJsonObject>
 
 #define CALLBACK_URL "http://localhost:7084"
@@ -51,6 +52,7 @@ struct Task
     bool isValid;
 
     QJsonObject task;
+    QList<int> sales;
 
     OperationTypes type;
     Statuses status;

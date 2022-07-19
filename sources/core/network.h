@@ -36,9 +36,10 @@ private slots:
     void gotData(QNetworkReply *);
 
 private:
-    QNetworkAccessManager *netMgr = new QNetworkAccessManager(this);
-    QNetworkRequest netRequest;
+    QNetworkAccessManager *m_netMgr = new QNetworkAccessManager(this);
+    QNetworkRequest m_netRequest;
 
+private:
     bool isFinished;
     bool shouldAbort;
 };

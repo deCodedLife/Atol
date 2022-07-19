@@ -1,8 +1,11 @@
-import QtQuick 2.9
-import QtQuick.Window 2.3
-import QtQuick.Controls 2.5
+import QtQuick
+import QtQuick.Window
+import QtQuick.Layouts
+import QtQuick.Controls
 
-import "StatusWindow"
+import Presets
+import "Custom"
+import "Windows"
 
 ApplicationWindow
 {
@@ -13,12 +16,35 @@ ApplicationWindow
     height: 480
 
     visible: false
+    Material.theme: Material.Light
+    Material.accent: Material.Teal
 
-    property var pages: [
-        "Reciepts.qml",
-        "JWT.qml",
-        "Settings.qml",
-        "Service.qml"
+    property var pages: 
+    [
+        {
+            title: "Операции",
+            enabled: true,
+
+            callback: () => pageLoader.setSource("Pages/Receipts.qml")
+        },
+        {
+            title: "Касса",
+            enabled: true,
+
+            callback: () => pageLoader.setSource("Pages/Cashbox.qml")
+        },
+        {
+            title: "JWT",
+            enabled: true,
+
+            callback: () => pageLoader.setSource("Pages/JWT.qml")
+        },
+        {
+            title: "API",
+            enabled: true,
+
+            callback: () => pageLoader.setSource("Pages/Settings.qml")
+        }
     ]
     property bool ignoreQuit: true
 
@@ -40,7 +66,7 @@ ApplicationWindow
 
         function onIconShowed()
         {
-            if (application.visibility == Window.Hidden)
+            if ( application.visibility == Window.Hidden )
             {
                 application.visible = true
                 application.show()
@@ -51,57 +77,70 @@ ApplicationWindow
             application.visible = false
         }
     }
+    
 
-    Connections
+    RowLayout
     {
-        target: SERVER
+        anchors.fill: parent
+        spacing: 0
 
-        onStatusChanged:
+        LeftPanel
         {
-            status.show()
+            id: leftPanel
+            pages: application.pages
+            Layout.fillHeight: true
+
+            z: 10
+        }
+
+        Loader
+        {
+            id: pageLoader
+            z: 0
+
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            active: true
+            asynchronous: true
+
+            Component.onCompleted: pages[0].callback()
+            
+            function reset()
+            {
+                setSource("NotExisting.qml")
+            }
+
+            function reload() 
+            {
+                var lastSourse = source
+                reset()
+
+                setSource(lastSourse)
+            }
         }
     }
+
 
     StatusWindow
     {
         id: status
         visible: false
+
+        Connections
+        {
+            target: SERVER
+            onStatusChanged: status.show()
+        }
     }
 
-    LeftPanel
-    {
-        pload: pageLoader
-
-        id: leftPanel
-        anchors.left: parent.left
-    }
-
-    Loader
-    {
-        id: pageLoader
-        property Animations standartAnimations: animations
-
-        width: parent.width - leftPanel.width
-        height: parent.height
-        anchors.right: parent.right
-
-        active: true
-        asynchronous: true
-        source: "Reciepts.qml"
-    }
-
-    Animations
-    {
-        id: animations
-        anchors.fill: parent
-    }
-
-    onClosing:
+    onClosing: function(close)
     {
         if (ignoreQuit)
         {
             close.accepted = false
             application.visible = false
+            pageLoader.reload()
 
             return
         }

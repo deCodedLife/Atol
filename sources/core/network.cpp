@@ -2,7 +2,7 @@
 
 Network::Network(QObject *parent) : QObject(parent), isFinished(true)
 {
-    QObject::connect(netMgr, &QNetworkAccessManager::finished, this, &Network::gotData);
+    QObject::connect(m_netMgr, &QNetworkAccessManager::finished, this, &Network::gotData);
 }
 
 bool Network::GetStatus()
@@ -13,29 +13,29 @@ bool Network::GetStatus()
 void Network::Get(QString uri)
 {
     isFinished = false;
-    netRequest.setUrl(QUrl(uri));
-    netMgr->get(netRequest);
+    m_netRequest.setUrl(QUrl(uri));
+    m_netMgr->get(m_netRequest);
 }
 
 void Network::Delete(QString uri)
 {
     isFinished = false;
-    netRequest.setUrl(QUrl(uri));
-    netMgr->deleteResource(netRequest);
+    m_netRequest.setUrl(QUrl(uri));
+    m_netMgr->deleteResource(m_netRequest);
 }
 
 void Network::Post(QString uri, QJsonObject data)
 {
     isFinished = false;
-    netRequest.setUrl(QUrl(uri));
+    m_netRequest.setUrl(QUrl(uri));
 
     QJsonDocument jsonObject(data);
     QByteArray jsonData = jsonObject.toJson();
 
-    netRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    netRequest.setHeader(QNetworkRequest::ContentLengthHeader, QByteArray::number(jsonData.size()));
+    m_netRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    m_netRequest.setHeader(QNetworkRequest::ContentLengthHeader, QByteArray::number(jsonData.size()));
 
-    netMgr->post(netRequest, jsonData);
+    m_netMgr->post(m_netRequest, jsonData);
 }
 
 void Network::GetSync(QString uri)
@@ -47,7 +47,7 @@ void Network::GetSync(QString uri)
     QNetworkAccessManager *mgr = new QNetworkAccessManager();
 
     request->setUrl(QUrl(uri));
-    mgr->get(netRequest);
+    mgr->get(m_netRequest);
 
     connect(mgr, SIGNAL(finished(QNetworkReply*)), loop, SLOT(quit()));
     connect(mgr, &QNetworkAccessManager::finished, this, &Network::gotData);
@@ -64,7 +64,7 @@ void Network::DeleteSync(QString uri)
     QNetworkAccessManager *mgr = new QNetworkAccessManager();
 
     request->setUrl(QUrl(uri));
-    mgr->deleteResource(netRequest);
+    mgr->deleteResource(m_netRequest);
 
     connect(mgr, SIGNAL(finished(QNetworkReply*)), loop, SLOT(quit()));
     connect(mgr, &QNetworkAccessManager::finished, this, &Network::gotData);
@@ -85,10 +85,10 @@ void Network::PostSync(QString uri, QJsonObject data)
     QByteArray jsonData = jsonObject.toJson();
 
     request->setUrl(QUrl(uri));
-    netRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    netRequest.setHeader(QNetworkRequest::ContentLengthHeader, QByteArray::number(jsonData.size()));
+    m_netRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    m_netRequest.setHeader(QNetworkRequest::ContentLengthHeader, QByteArray::number(jsonData.size()));
 
-    reply = mgr->post(netRequest, jsonData);
+    reply = mgr->post(m_netRequest, jsonData);
     connect(mgr, SIGNAL(finished(QNetworkReply*)), loop, SLOT(quit()));
 
     loop->exec();
