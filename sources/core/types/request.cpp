@@ -7,7 +7,7 @@ QJsonObject Request::toJson()
     QJsonObject request;
     request["service"] = service;
     request["command"] = command;
-    request["data"] = data;
+    request["data"] = QJsonValue::fromVariant( data );
     request["jwt"] = jwt;
 
     return request;
@@ -43,7 +43,7 @@ void Request::SetCommand(QString c)
     command = c;
 }
 
-void Request::SetData(QJsonObject d)
+void Request::SetData(QVariant d)
 {
     data = d;
 }
@@ -97,12 +97,22 @@ Request Request::GetOperations(QString cashbox_id, QString jwt)
     return mewbasRequest;
 }
 
-Request Request::StatusChange(int sale_id, QString status, QString description, QString jwt)
+Request Request::StatusChange(int sale_id, QString status, QString description, QString hash, QString jwt)
 {
     QJsonObject requestData;
-    requestData["id"] = sale_id;
+
     requestData["status"] = status;
     requestData["description"] = description;
+
+    if ( hash.isEmpty() == false )
+    {
+        requestData["hash"] = hash;
+        requestData["by_hash"] = true;
+    }
+    else
+    {
+        requestData["id"] = sale_id;
+    }
 
     Request mewbasRequest;
     mewbasRequest.SetService("sales");
@@ -113,7 +123,36 @@ Request Request::StatusChange(int sale_id, QString status, QString description, 
     return mewbasRequest;
 }
 
-Request Request::UpdateRecieptCode(int sale_id, QString code, QString jwt)
+Request Request::StatusChangeMultiple(QList<int> sales, QString status, QString description, QString jwt)
+{
+    QJsonObject requestData;
+    QJsonArray requestsSales;
+
+    foreach( int sale_id, sales )
+    {
+        QJsonObject data;
+
+        data["id"] = sale_id;
+        data["status"] = status;
+        data["description"] = description;
+
+        requestsSales.append(data);
+    }
+
+    requestData["sales"] = requestsSales;
+
+    Request mewbasRequest;
+    mewbasRequest.SetService("sales");
+    mewbasRequest.SetCommand("changeMultiple");
+    mewbasRequest.SetData(requestData);
+    mewbasRequest.ChangeJWT(jwt);
+
+    qDebug() << QJsonDocument( mewbasRequest.toJson() ).toJson();
+
+    return mewbasRequest;
+}
+
+Request Request::UpdateRecieptCode(int sale_id, QString code, QString hash, QString jwt)
 {
     QJsonObject requestData;
     requestData["id"] = sale_id;
@@ -122,6 +161,13 @@ Request Request::UpdateRecieptCode(int sale_id, QString code, QString jwt)
     Request mewbasRequest;
     mewbasRequest.SetService("sales");
     mewbasRequest.SetCommand("change");
+
+    if ( hash.isEmpty() == false )
+    {
+        requestData["hash"] = hash;
+        requestData["by_hash"] = true;
+    }
+
     mewbasRequest.SetData(requestData);
     mewbasRequest.ChangeJWT(jwt);
 

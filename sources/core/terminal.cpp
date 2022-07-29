@@ -87,6 +87,12 @@ void Terminal::CheckStatus()
     m_timeOut--;
     TPayment currentPayment = m_terminalParser.Parse();
 
+    if ( m_timeOut < 1 )
+    {
+        Cancel();
+        emit timeout("[ERROR] [EPAY] Terminal timeout");
+    }
+
     if ( currentPayment.Result == PAYMENT_NOTFOUND )
     {
         return;
@@ -102,12 +108,6 @@ void Terminal::CheckStatus()
     {
         Cancel();
         emit succsess();
-    }
-
-    if ( m_timeOut < 1 )
-    {
-        Cancel();
-        emit timeout("[ERROR] [EPAY] Terminal timeout");
     }
 }
 

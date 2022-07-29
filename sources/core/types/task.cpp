@@ -33,6 +33,7 @@ Task Task::parse(QJsonObject json)
     recievedTask.ePaySum = 0;
     recievedTask.ePay = false;
     recievedTask.isOperation = false;
+    recievedTask.hash = mewbassTask["hash"].toString();
     recievedTask.uuid = mewbassRequest["uuid"].toString();
     callback["resultUrl"] = CALLBACK_URL;
 
@@ -111,7 +112,7 @@ Task Task::parse(QJsonObject json)
         }
     }
 
-    if ( productsSum > paymentSum )
+    if ( paymentSum > productsSum  )
     {
         recievedTask.isValid = false;
     }

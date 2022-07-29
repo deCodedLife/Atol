@@ -28,18 +28,14 @@ void Mewbas::ChangeStatus(Task task)
         return;
     }
 
-    QString status;
+    QString status, hash;
     status = task.status == TASK_SUCCSESS ? "done" : "error";
     Request mewRequest;
 
-    foreach( int saleID, task.sales )
-    {
-        mewRequest = Request::StatusChange(saleID, status, task.description);
-        mewRequest.ChangeJWT(m_configuration.jwt);
-    
-        SendRequest( mewRequest );
-    }
+    mewRequest = Request::StatusChangeMultiple(task.sales, status, task.description);
+    mewRequest.ChangeJWT(m_configuration.jwt);
 
+    SendRequest( mewRequest );
     NextTask();
 }
 
@@ -49,16 +45,11 @@ void Mewbas::NextTask()
 }
 
 void Mewbas::ChangeRecieptCode(Task task, QString code)
-{    
+{
     Request mewRequest;
-
-    foreach( int saleID, task.sales )
-    {
-        mewRequest = Request::UpdateRecieptCode(saleID, code);
-        mewRequest.ChangeJWT(m_configuration.jwt);
-    
-        SendRequest(mewRequest);
-    }
+    mewRequest = Request::UpdateRecieptCode(task.saleID, code, task.hash);
+    mewRequest.ChangeJWT(m_configuration.jwt);
+    SendRequest(mewRequest);
 }
 
 void Mewbas::updatePayments()

@@ -44,6 +44,7 @@ struct Task
     double ePaySum;
 
     QString uuid;
+    QString hash;
     QString description;
     QString returnCode;
 
