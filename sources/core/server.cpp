@@ -2,7 +2,8 @@
 
 Server::Server(QObject *parent) : TObject(parent)
 {
-    TimeoutDaemon.SetTicks(15);
+    m_isBlocked = false;
+    TimeoutDaemon.SetTicks(10);
     EpayTimeout.SetTicks(1);
 
     logList = QMap<GLOBAL_ERRORS, Log> {
@@ -43,7 +44,11 @@ void Server::qmlReturnEpay(double sum)
 
 void Server::cancelPrint()
 {
+    m_isBlocked = true;
     net.Delete(m_configuration.serverAddr + "/api/v2/requests/" + currentTask.uuid);
+    
+    emit notify( "Ошибка", "Соединение с кассой потеряно. Не проводите операции до устранения неполадок" );
+    emit block();
 }
 
 QString Server::qmlGetStatus()
@@ -120,6 +125,7 @@ void Server::cancelOperation()
 
     state = STATE_NONE;
 
+    net.Delete(m_configuration.serverAddr + "/api/v2/requests/" + currentTask.uuid);
     emit updateStatus(currentTask);
     emit taskEnded();
 }
@@ -206,6 +212,12 @@ void Server::HttpWorkerRecived(QString from, QJsonObject response)
 
 void Server::AtolRecived(QJsonObject response)
 {
+
+    if ( m_isBlocked )
+    {
+        return;
+    }
+
     QJsonArray results = response["results"].toArray();
     QJsonObject result = results[0].toObject()["error"].toObject();
 
@@ -240,4 +252,9 @@ void Server::AtolRecived(QJsonObject response)
 
     emit taskEnded();
     emit updateStatus(currentTask);
+}
+
+void Server::qmlRestoreServer() 
+{
+    emit restore();
 }

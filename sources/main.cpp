@@ -13,14 +13,20 @@
 int main(int argc, char *argv[])
 {
     bool checked = false;
+    bool ignoreValidation = false;
 
     Configs configs;
     QObject *_this = new QObject;
 
     QApplication app(argc, argv);
-    QSharedMemory *shared = new QSharedMemory("Atol-Server");
 
-    if ( shared->create( 512, QSharedMemory::ReadWrite ) == false )
+
+    QSharedMemory *shared = new QSharedMemory("Atol-Server");
+    ignoreValidation = app.arguments().last() == "1" ? true : false;
+
+
+    if ( shared->create( 512, QSharedMemory::ReadWrite ) == false && 
+         ignoreValidation == false )
     {
         qDebug() << "Multiple instances are not allowed!";
 
@@ -34,6 +40,7 @@ int main(int argc, char *argv[])
 
         exit(0);
     }
+
 
     QObject::connect(&configs, &Configs::configsLoaded, _this, [&] (Configuration c)
     {
@@ -69,6 +76,17 @@ int main(int argc, char *argv[])
         engine.quit();
         exit(0);
     });
+
+    QObject::connect(tray, &Tray::reload, _this, [&] ()
+    {
+        app.quit();
+        QList<QString> arguments = app.arguments().mid(1);
+        arguments.append("1");
+
+        QProcess::startDetached(app.arguments()[0], arguments);
+    });
+
+
 
     context->setContextProperty("TRAY", tray);
     context->setContextProperty("CONFIGS", &configs);

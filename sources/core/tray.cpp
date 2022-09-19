@@ -6,11 +6,14 @@ Tray::Tray(QObject *parent) : QObject(parent)
 
     QAction *showAction = new QAction("Развернуть", this);
     QAction *quitAction = new QAction("Выйти", this);
+    QAction *reloadAction = new QAction("Перезагрузить", this);
 
     connect(showAction, &QAction::triggered, this, &Tray::showed);
+    connect(reloadAction, &QAction::triggered, this, &Tray::reload);
     connect(quitAction, &QAction::triggered, this, &Tray::closed);
 
     trayMenu->addAction(showAction);
+    trayMenu->addAction(reloadAction);
     trayMenu->addAction(quitAction);
 
     icon = new QSystemTrayIcon();

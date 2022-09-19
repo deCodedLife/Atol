@@ -19,6 +19,24 @@ ApplicationWindow
     Material.theme: Material.Light
     Material.accent: Material.Teal
 
+    Notify
+    {
+        id: notifyWindow
+        visible: false
+    }
+
+    Connections
+    {
+        target: SERVER
+        
+        function onNotify( title, message ) 
+        {
+            notifyWindow.title = title
+            notifyWindow.message = message 
+            notifyWindow.show()
+        }
+    }
+
     property var pages: 
     [
         {

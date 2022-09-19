@@ -12,6 +12,7 @@ signals:
     void iconShowed();
     void showed();
     void closed();
+    void reload();
 
 public:
     explicit Tray(QObject *parent = nullptr);

@@ -23,6 +23,8 @@ public slots:
     void ChangeStatus(Task);
     void NextTask();
     void ChangeRecieptCode(Task, QString);
+    void Block();
+    void Restore();
 
 private slots:
     void updatePayments();
@@ -34,6 +36,8 @@ private slots:
 private:
     Network m_net;
 
+private:
+    bool m_isBlocked;
     QJsonObject m_currentTask;
     QList<Task> m_queue = QList<Task>();
 };

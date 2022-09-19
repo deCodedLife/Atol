@@ -24,6 +24,10 @@ void Atol::ChangeConfiguration(Configs *c)
     connect(&core, &Server::skipped, &api, &Mewbas::NextTask);
     connect(&core, &Server::updateRecieptCode, &api, &Mewbas::ChangeRecieptCode);
 
+    connect(&core, &Server::block, &api, &Mewbas::Block);
+    connect(&core, &Server::restore, &api, &Mewbas::Restore);
+
+
     connect(&api, &Mewbas::newTask, &core, &Server::GotTask);
 
 #if (AUTO_CONFIRM == false)

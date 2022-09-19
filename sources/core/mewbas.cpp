@@ -2,6 +2,7 @@
 
 Mewbas::Mewbas(QObject *parent) : TObject(parent)
 {
+    m_isBlocked = false;
     RequestDaemon.SetTicks(5);
     RequestDaemon.Reset();
 
@@ -15,8 +16,23 @@ Mewbas::Mewbas(QObject *parent) : TObject(parent)
     connect(&RequestDaemon, &Daemon::triggered, this, &Mewbas::updateOperations);
 }
 
+void Mewbas::Block()
+{
+    m_isBlocked = true;
+}
+
+void Mewbas::Restore()
+{
+    m_isBlocked = false;
+}
+
 void Mewbas::SendRequest(Request r)
 {
+    if ( m_isBlocked )
+    {
+        return;
+    }
+
     m_net.Post(m_configuration.mewbasAddr, r.toJson());
 }
 
@@ -99,6 +115,11 @@ void Mewbas::gotData(QString data)
 {
     QJsonParseError error;
     QJsonObject mewbasResponse = QJsonDocument::fromJson(data.toUtf8(), &error).object();
+
+    if ( m_isBlocked )
+    {
+        return;
+    }
 
     if ( error.error != QJsonParseError::NoError )
     {

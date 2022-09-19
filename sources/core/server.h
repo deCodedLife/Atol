@@ -35,6 +35,7 @@ public:
 
     Q_INVOKABLE QString qmlGetStatus();
     Q_INVOKABLE void qmlCancelOperation();
+    Q_INVOKABLE void qmlRestoreServer();
     Q_INVOKABLE void qmlReturnEpay(double sum);
 
 signals:
@@ -42,8 +43,11 @@ signals:
     void updateRecieptCode(Task, QString);
     void statusChanged(QString);
 
+    void notify(QString title, QString message);
     void taskEnded();
     void skipped();
+    void block();
+    void restore();
 
 public slots:
     void GotTask(QJsonObject);
@@ -63,6 +67,7 @@ private slots:
 
 private:
     Task currentTask;
+    bool m_isBlocked;
 
 private:
     Network net;

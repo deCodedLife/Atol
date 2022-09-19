@@ -73,8 +73,8 @@ ApplicationWindow
             if ( SERVER.status == SERVER.cashboxStatus )
             {
                 cancel.visible = false
-                progress.arcEnd = 15
-                currentOperation.duration = 1000 * 15
+                progress.arcEnd = 10
+                currentOperation.duration = 1000 * 10
             }
             else
             {

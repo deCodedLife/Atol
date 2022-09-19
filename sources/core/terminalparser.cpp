@@ -42,6 +42,10 @@ TPayment TerminalParser::Parse()
     last.Result = PAYMENT_NOTFOUND;
     bool applyResult = false;
 
+#ifdef QT_DEBUG
+    last.Result = PAYMENT_DONE;
+#endif
+
     while ( logTextStream.atEnd() == false )
     {
         TLine tempPayment;
