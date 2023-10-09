@@ -4,8 +4,8 @@ import QtQuick.Layouts
 import QtQuick.Controls
 
 import Presets
-import "Custom"
-import "Windows"
+import "Custom/"
+import "Windows/"
 
 ApplicationWindow
 {
@@ -19,7 +19,7 @@ ApplicationWindow
     Material.theme: Material.Light
     Material.accent: Material.Teal
 
-    Notify
+    Notifier
     {
         id: notifyWindow
         visible: false

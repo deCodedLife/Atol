@@ -115,9 +115,7 @@ bool TerminalParser::isValid(QString line)
         return false;
     }
 
-    QTime operationTime = QTime::fromString(parsed.Time, "HH:mm:ss");
-
-    if ( operationTime < m_currentPayment.After )
+    if ( QTime::fromString(parsed.Time) < m_currentPayment.After )
     {
         return false;
     }
@@ -175,6 +173,11 @@ TLine TLine::fromString(QString data)
     if ( payment.Action == TYPE_RESULT )
     {
         payment.type = LINE_RESULT;
+
+        // SBKRNL update 23.10.09
+        QStringList actionDetails = data.split( "SBKRNL:" );
+        QStringList infoDetails = actionDetails[1].split( "," );
+        payment.Value = infoDetails[0].split( "= " )[1];
     }
 
     return payment;

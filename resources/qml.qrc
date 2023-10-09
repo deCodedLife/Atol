@@ -21,5 +21,6 @@
         <file>images/search_icon.svg</file>
         <file>images/settings.svg</file>
         <file>images/menu_icon.svg</file>
+        <file>qml/Windows/Notifier.qml</file>
     </qresource>
 </RCC>

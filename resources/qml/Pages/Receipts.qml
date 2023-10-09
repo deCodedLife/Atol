@@ -161,7 +161,7 @@ Item
             model: visibleReciepts
             delegate: Receipt
             {
-                width: parent.width
+                Layout.fillWidth: true
                 height: Presets.defaultHeight + 10
                 task: modelData
                 isEven: index % 2 == 0 ? true : false

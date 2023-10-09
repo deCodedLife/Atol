@@ -104,7 +104,7 @@ ApplicationWindow
             RowLayout
             {
                 Layout.fillWidth: true
-                GridLayout.fillHeight: true
+                Layout.fillHeight: true
 
                 Text
                 {
