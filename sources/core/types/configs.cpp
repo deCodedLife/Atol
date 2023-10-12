@@ -51,7 +51,7 @@ void Configs::Read()
     configsJson[PARAM_SERVER_ID] = configs.value(PARAM_SERVER_ID, SERVER_ID).toString();
     configsJson[PARAM_CASHBOX_ID] = configs.value(PARAM_CASHBOX_ID, CASHBOX_ID).toString();
     configsJson[PARAM_MEWBASS_ADDRESS] = configs.value(PARAM_MEWBASS_ADDRESS, MEWBASS_ADDRESS).toString();
-    configsJson[PARAM_SERVER_ADDRESS] = configs.value(PARAM_SERVER_ADDRESS, PARAM_SERVER_ADDRESS).toString();
+    configsJson[PARAM_SERVER_ADDRESS] = configs.value(PARAM_SERVER_ADDRESS, SERVER_ADDRESS).toString();
     configsJson[PARAM_TERMINAL_DIR] = configs.value(PARAM_TERMINAL_DIR, TERMINAL_DIR).toString();
     configsJson[PARAM_JWT] = configs.value(PARAM_JWT, "").toString();
     configsJson[PARAM_JWT_USERNAME] = configs.value(PARAM_JWT_USERNAME, JWT_USERNAME).toString();

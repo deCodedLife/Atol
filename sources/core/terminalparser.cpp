@@ -43,7 +43,7 @@ TPayment TerminalParser::Parse()
     bool applyResult = false;
 
 #ifdef QT_DEBUG
-    last.Result = PAYMENT_DONE;
+//    last.Result = PAYMENT_DONE;
 #endif
 
     while ( logTextStream.atEnd() == false )
@@ -76,6 +76,11 @@ TPayment TerminalParser::Parse()
         {
 
             if ( applyResult == false )
+            {
+                continue;
+            }
+
+            if ( tempPayment.Value == "2000" )
             {
                 continue;
             }
@@ -115,7 +120,9 @@ bool TerminalParser::isValid(QString line)
         return false;
     }
 
-    if ( QTime::fromString(parsed.Time) < m_currentPayment.After )
+    QTime operationTime = QTime::fromString(parsed.Time, "HH:mm:ss");
+
+    if ( operationTime < m_currentPayment.After )
     {
         return false;
     }
@@ -174,7 +181,6 @@ TLine TLine::fromString(QString data)
     {
         payment.type = LINE_RESULT;
 
-        // SBKRNL update 23.10.09
         QStringList actionDetails = data.split( "SBKRNL:" );
         QStringList infoDetails = actionDetails[1].split( "," );
         payment.Value = infoDetails[0].split( "= " )[1];

@@ -83,15 +83,16 @@ Item
                 TextField
                 {
                     id: search
-
-                    Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    placeholderText: "Сумма или время"
+                    placeholderText: focus ? "" : "Сумма или время"
                     maximumLength: 32
 
                     leftPadding: 42
                     bottomPadding: 8
+
+                    width: Presets.defaultHeight * 6
+                    implicitWidth: Presets.defaultHeight * 6
 
                     font.pointSize: Presets.h4
                     background: Rectangle

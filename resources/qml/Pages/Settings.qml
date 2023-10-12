@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Material
+import QtQuick.Dialogs
 
 import Presets
 
@@ -11,6 +12,15 @@ Item
 
     anchors.fill: parent
     property var configs: CONFIGS.data
+
+    MessageDialog {
+        id: messageDialog
+        title: "AtolServer 2.3"
+        text: "Данные успешно изменены"
+        buttons: MessageDialog.Ok
+        onAccepted: {}
+        visible: false
+    }
 
     Rectangle
     {
@@ -111,7 +121,7 @@ Item
 
                     onClicked:
                     {
-                        defaultAnimations.verifyAnimation()
+                        messageDialog.visible = true
                         changeData()
                     }
                 }

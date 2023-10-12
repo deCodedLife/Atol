@@ -124,8 +124,8 @@ Item
 
                 Button
                 {
-                    width: Presets.defaultHeight
-                    height: Presets.defaultHeight
+                    width: Presets.defaultHeight * 2
+                    height: Presets.defaultHeight * 2
 
                     anchors.centerIn: parent
 

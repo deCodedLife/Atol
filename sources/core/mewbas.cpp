@@ -51,7 +51,7 @@ void Mewbas::ChangeStatus(Task task)
     mewRequest = Request::StatusChangeMultiple(task.sales, status, task.description);
     mewRequest.ChangeJWT(m_configuration.jwt);
 
-    SendRequest( mewRequest );
+//    SendRequest( mewRequest );
     NextTask();
 }
 

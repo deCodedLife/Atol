@@ -23,10 +23,10 @@ ApplicationWindow
     maximumWidth: width
     maximumHeight: height
 
-    flags: Qt.Window | Qt.CustomizeWindowHint | Qt.NoDropShadowWindowHint | Qt.WindowStaysOnTopHint
+    flags: Qt.Window | Qt.CustomizeWindowHint | Qt.NoDropShadowWindowHint | Qt.WindowStaysOnTopHint | Qt.WA_TranslucentBackground
     visible: false
-
     color: Qt.rgba(0,0,0,0)
+
     Material.theme: Material.Light
     Material.accent: Material.Teal
 
