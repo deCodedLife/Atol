@@ -2,13 +2,23 @@ cmake_minimum_required(VERSION 3.14)
 
 project(AtolServer VERSION 0.2 LANGUAGES CXX)
 
+add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Network HttpServer SVG Widgets)
+set( PROJECT_NAME AtolServer )
+find_package(
+    Qt6 6.5 REQUIRED
+    COMPONENTS
+    Quick
+    Network
+    HttpServer
+    SVG
+    Widgets
+)
 
 set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/sources/core/types/tobject.cpp
@@ -56,32 +66,35 @@ set(SOURCES
 )
 
 qt_standard_project_setup()
-qt_add_executable(AtolServer
+qt_add_executable(
+    AtolServer
     ${SOURCES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/Atol.rc
     ${CMAKE_CURRENT_SOURCE_DIR}/sources/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/qml.qrc
 )
 
-qt_add_qml_module(AtolServer
-    URI AtolServer
-    VERSION 1.0
-)
-
 set( PROJECT_NAME AtolServer )
 
-set_target_properties(AtolServer PROPERTIES
+set_target_properties(
+    AtolServer PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER me.codedlife.atol
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
+    WIN32_EXECUTABLE TRUE
 )
 
-target_link_libraries(AtolServer
+target_link_libraries(
+    AtolServer
     PRIVATE Qt6::Quick
     PRIVATE Qt6::Network
     PRIVATE Qt6::HttpServer
     PRIVATE Qt6::Widgets
 )
 
-set(CPACK_GENERATOR "DragNDrop")
+#set( UPX_EXE C:/tools/upx.exe )
+#set( BUILD ${CMAKE_BUILD_RPATH}${PROJECT_NAME}.exe)
+
+set(CPACK_GENERATOR "ZIP")
 include(CPack)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QFile>
 #include <QObject>
 #include <QEventLoop>
 #include <QJsonObject>

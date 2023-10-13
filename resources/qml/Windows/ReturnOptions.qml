@@ -81,6 +81,8 @@ ApplicationWindow
 
     function getEpaySum(task)
     {
+        if ( Object.keys( task ).length == 0 ) return
+
         let sum = 0
         let payments = task["request"]["payments"]
 

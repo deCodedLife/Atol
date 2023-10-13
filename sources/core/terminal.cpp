@@ -12,7 +12,7 @@ Terminal::Terminal(QObject *parent) : TObject(parent)
 void Terminal::Pay(double sum, OperationTypes type)
 {
     m_payment = (int) (sum * 100);
-    m_timeOut = 60 * 2;
+    m_timeOut = 900 * 2;
 
     QTime currentTime = QTime::currentTime();
     currentTime = currentTime.addSecs(-10);
@@ -87,10 +87,9 @@ void Terminal::CheckStatus()
     m_timeOut--;
     TPayment currentPayment = m_terminalParser.Parse();
 
-    if ( m_timeOut < 1 )
-    {
+    if ( QFile::exists( m_configuration.terminalDir + "/P" ) ) {
         Cancel();
-        emit timeout("[ERROR] [EPAY] Terminal timeout");
+        emit succsess();
     }
 
     if ( currentPayment.Result == PAYMENT_NOTFOUND )

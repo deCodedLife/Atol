@@ -3,7 +3,6 @@
 Server::Server(QObject *parent) : TObject(parent)
 {
     m_isBlocked = false;
-    TimeoutDaemon.SetTicks(10);
     EpayTimeout.SetTicks(1);
 
     logList = QMap<GLOBAL_ERRORS, Log> {
@@ -19,7 +18,7 @@ Server::Server(QObject *parent) : TObject(parent)
     connect(&worker, &HttpWorker::dataRecived, this, &Server::AtolRecived);
 #endif
     connect(&eCash, &Terminal::succsess, this, &Server::printCashcheck);
-    connect(&eCash, &Terminal::timeout, this, &Server::OperationFailed);
+    //connect(&eCash, &Terminal::timeout, this, &Server::OperationFailed);
     connect(&eCash, &Terminal::gotError, this, &Server::OperationFailed);
     connect(&eCash, &Terminal::codeDetected, this, &Server::handleRecieptCode);
 
@@ -108,6 +107,12 @@ void Server::printCashcheck()
 
     net.Post(m_configuration.serverAddr + "/api/v2/requests", currentTask.task);
 
+    currentTask.description = "done";
+    currentTask.status = TASK_SUCCSESS;
+
+    emit taskEnded();
+    emit updateStatus(currentTask);
+
 #if (AUTO_CONFIRM)
     worker.SetURL(m_configuration.serverAddr, {"api", "v2", "requests", currentTask.uuid});
 #endif
@@ -125,7 +130,7 @@ void Server::cancelOperation()
 
     state = STATE_NONE;
 
-    net.Delete(m_configuration.serverAddr + "/api/v2/requests/" + currentTask.uuid);
+    //net.Delete(m_configuration.serverAddr + "/api/v2/requests/" + currentTask.uuid);
     emit updateStatus(currentTask);
     emit taskEnded();
 }
@@ -212,6 +217,8 @@ void Server::HttpWorkerRecived(QString from, QJsonObject response)
 
 void Server::AtolRecived(QJsonObject response)
 {
+
+    return;
 
     if ( m_isBlocked )
     {

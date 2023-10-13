@@ -32,7 +32,7 @@ ApplicationWindow
         function onNotify( title, message ) 
         {
             notifyWindow.title = title
-            notifyWindow.message = message 
+            notifyWindow.description = message
             notifyWindow.show()
         }
     }
