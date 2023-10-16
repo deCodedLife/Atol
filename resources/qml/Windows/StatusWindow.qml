@@ -23,7 +23,7 @@ ApplicationWindow
     maximumWidth: width
     maximumHeight: height
 
-    flags: Qt.Window | Qt.CustomizeWindowHint | Qt.NoDropShadowWindowHint | Qt.WindowStaysOnTopHint | Qt.WA_TranslucentBackground
+    flags: Qt.CustomizeWindowHint | Qt.WindowStaysOnTopHint | Qt.WA_TranslucentBackground | Qt.FramelessWindowHint
     visible: false
     color: Qt.rgba(0,0,0,0)
 
@@ -118,7 +118,7 @@ ApplicationWindow
                 {
                     id: status
                     Layout.fillWidth: true
-                    text: "Ожидание платы терминалом"
+                    text: "Ожидание оплаты терминалом"
                     font.pointSize: 14
                 }
 

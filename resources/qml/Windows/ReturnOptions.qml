@@ -22,7 +22,7 @@ ApplicationWindow
     x: Screen.width / 2 - width / 2
     y: Screen.height / 2 - height / 2
 
-    flags: Qt.Window | Qt.CustomizeWindowHint | Qt.NoDropShadowWindowHint | Qt.WindowStaysOnTopHint
+    flags: Qt.Window | Qt.CustomizeWindowHint | Qt.NoDropShadowWindowHint | Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint
     color: Qt.rgba(0, 0, 0, 0)
 
     Material.theme: Material.Light

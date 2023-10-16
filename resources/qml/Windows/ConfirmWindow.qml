@@ -27,7 +27,7 @@ ApplicationWindow
     Material.theme: Material.Light
     Material.accent: Material.Teal
 
-    flags: Qt.Window | Qt.CustomizeWindowHint | Qt.NoDropShadowWindowHint | Qt.WindowStaysOnTopHint
+    flags: Qt.Window | Qt.CustomizeWindowHint | Qt.NoDropShadowWindowHint | Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint
 
     property var action
     property string title: "Подтвердите действие"

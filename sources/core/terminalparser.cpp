@@ -120,9 +120,7 @@ bool TerminalParser::isValid(QString line)
         return false;
     }
 
-    QTime operationTime = QTime::fromString(parsed.Time, "HH:mm:ss");
-
-    if ( operationTime < m_currentPayment.After )
+    if ( QTime::fromString(parsed.Time) < m_currentPayment.After )
     {
         return false;
     }

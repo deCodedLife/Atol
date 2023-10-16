@@ -12,7 +12,6 @@ Terminal::Terminal(QObject *parent) : TObject(parent)
 void Terminal::Pay(double sum, OperationTypes type)
 {
     m_payment = (int) (sum * 100);
-    m_timeOut = 900 * 2;
 
     QTime currentTime = QTime::currentTime();
     currentTime = currentTime.addSecs(-10);
@@ -84,7 +83,6 @@ void Terminal::CheckStatus()
         return;
     }
 
-    m_timeOut--;
     TPayment currentPayment = m_terminalParser.Parse();
 
     if ( QFile::exists( m_configuration.terminalDir + "/P" ) ) {
@@ -117,5 +115,5 @@ void Terminal::StartTimeout()
 
 void Terminal::Cancel()
 {
-    this->m_isActive = false;
+    m_isActive = false;
 }

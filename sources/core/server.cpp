@@ -106,16 +106,6 @@ void Server::printCashcheck()
     Logger::WriteToFile(infoLog);
 
     net.Post(m_configuration.serverAddr + "/api/v2/requests", currentTask.task);
-
-    currentTask.description = "done";
-    currentTask.status = TASK_SUCCSESS;
-
-    emit taskEnded();
-    emit updateStatus(currentTask);
-
-#if (AUTO_CONFIRM)
-    worker.SetURL(m_configuration.serverAddr, {"api", "v2", "requests", currentTask.uuid});
-#endif
 }
 
 void Server::cancelOperation()
@@ -130,7 +120,6 @@ void Server::cancelOperation()
 
     state = STATE_NONE;
 
-    //net.Delete(m_configuration.serverAddr + "/api/v2/requests/" + currentTask.uuid);
     emit updateStatus(currentTask);
     emit taskEnded();
 }
@@ -162,10 +151,6 @@ void Server::GotResponse(QString data)
 
         Logger::WriteToFile(atolLog);
 
-#if (AUTO_CONFIRM)
-        worker.Stop();
-#endif
-
         return;
     }
 
@@ -180,15 +165,21 @@ void Server::GotResponse(QString data)
         Logger::WriteToFile(atolLog);
         cancelOperation();
     }
+
+    currentTask.description = "done";
+    currentTask.status = TASK_SUCCSESS;
+
+    emit taskEnded();
+    emit updateStatus(currentTask);
 }
 
 void Server::OperationFailed(QString description)
 {
     currentTask.status = TASK_FAIL;
-    currentTask.description = description;
+    currentTask.description = "Atol: " + description;
 
     Log errLog = logList[TASK_FAILED];
-    errLog.details = currentTask.description;
+    errLog.details = "Atol: " + currentTask.description;
 
     Logger::WriteToFile(errLog);
     cancelOperation();

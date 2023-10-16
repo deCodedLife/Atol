@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(AtolServer VERSION 0.2 LANGUAGES CXX)
+project(AtolServer VERSION 2.4 LANGUAGES CXX)
 
 add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
@@ -11,7 +11,7 @@ set(CMAKE_AUTORCC ON)
 
 set( PROJECT_NAME AtolServer )
 find_package(
-    Qt6 6.5 REQUIRED
+    Qt6 6.4 REQUIRED
     COMPONENTS
     Quick
     Network
