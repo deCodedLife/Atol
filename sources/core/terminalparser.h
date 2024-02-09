@@ -10,7 +10,7 @@ enum PaymentResults
 {
     PAYMENT_NOTFOUND,
     PAYMENT_ERROR,
-    PAYMENT_DONE
+    PAYMENT_DONE,
 };
 
 struct TPayment
@@ -27,7 +27,8 @@ enum TLineTypes
 {
     LINE_NONE,
     LINE_COMMAND,
-    LINE_RESULT
+    LINE_RESULT,
+    LINE_BIOMETRY
 };
 
 struct TLine

@@ -20,6 +20,7 @@ public:
     Reciepts(QObject *parent = nullptr);
 
     Q_INVOKABLE void remove(QJsonObject);
+    Q_INVOKABLE void print(QJsonObject);
     Q_INVOKABLE void qmlReturnEpay(QJsonObject);
     
     QList<QJsonObject> QMLReciepts();
@@ -30,6 +31,7 @@ public slots:
 private:
     void loadReciepts();
     int search(QJsonObject task);
+    QJsonObject clearTask(QJsonObject);
 
 private:
     Network net;

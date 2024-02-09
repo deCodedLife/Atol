@@ -21,6 +21,7 @@ void TerminalParser::SetDirectory(QString folder)
     QString logID = QDate::currentDate().toString("yyMM");
     m_lastLog = folder.append("/sbkernel").append(logID).append(".log");
     m_terminalFolder = folder;
+    qDebug() << folder;
 }
 
 TPayment TerminalParser::Parse()

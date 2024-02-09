@@ -34,6 +34,7 @@ void Mewbas::SendRequest(Request r)
     }
 
     m_net.Post(m_configuration.mewbasAddr, r.toJson());
+    qDebug() << "sending" << r.toJson();
 }
 
 void Mewbas::ChangeStatus(Task task)
@@ -48,8 +49,15 @@ void Mewbas::ChangeStatus(Task task)
     status = task.status == TASK_SUCCSESS ? "done" : "error";
     Request mewRequest;
 
-    mewRequest = Request::StatusChangeMultiple(task.sales, status, task.description);
-    mewRequest.ChangeJWT(m_configuration.jwt);
+    if ( task.status == TASK_SUCCSESS )
+    {
+        mewRequest = Request::ConfirmTransaction(task.sales.first());
+    }
+    else
+    {
+        mewRequest = Request::CancelTransaction(task.sales.first(), status, task.description);
+    }
+
 
     SendRequest( mewRequest );
     NextTask();
@@ -62,10 +70,10 @@ void Mewbas::NextTask()
 
 void Mewbas::ChangeRecieptCode(Task task, QString code)
 {
-    Request mewRequest;
-    mewRequest = Request::UpdateRecieptCode(task.saleID, code, task.hash);
-    mewRequest.ChangeJWT(m_configuration.jwt);
-    SendRequest(mewRequest);
+//    Request mewRequest;
+//    mewRequest = Request::UpdateRecieptCode(task.saleID, code, task.hash);
+//    mewRequest.ChangeJWT(m_configuration.jwt);
+//    SendRequest(mewRequest);
 }
 
 void Mewbas::updatePayments()
@@ -158,8 +166,13 @@ void Mewbas::gotData(QString data)
 
     if ( Task::parse(mewbasResponse).isValid == false )
     {
+        qDebug() << mewbasResponse;
         return;
     }
+
+//    if ( mewbasResponse.isEmpty() ) return;
+
+    qDebug() << "Got task" << mewbasResponse;
 
     m_currentTask = mewbasResponse;
     emit newTask(m_currentTask);

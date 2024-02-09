@@ -5,10 +5,9 @@ Request::Request() {}
 QJsonObject Request::toJson()
 {
     QJsonObject request;
-    request["service"] = service;
     request["command"] = command;
+    request["object"] = service;
     request["data"] = QJsonValue::fromVariant( data );
-    request["jwt"] = jwt;
 
     return request;
 }
@@ -70,15 +69,10 @@ Request Request::GetPayments(QString cashbox_id, QString jwt)
 
     Request mewbasRequest;
     mewbasRequest.SetService("atol");
-
-#ifdef QT_DEBUG
-    mewbasRequest.SetCommand("getPayments_beta");
-#else
-    mewbasRequest.SetCommand("getPayments_beta");
-#endif
+    mewbasRequest.SetCommand("get-transactions");
 
     mewbasRequest.SetData(requestData);
-    mewbasRequest.ChangeJWT(jwt);
+    //    mewbasRequest.ChangeJWT(jwt);
 
     return mewbasRequest;
 }
@@ -90,35 +84,38 @@ Request Request::GetOperations(QString cashbox_id, QString jwt)
 
     Request mewbasRequest;
     mewbasRequest.SetService("atol");
-    mewbasRequest.SetCommand("getOperations");
+    mewbasRequest.SetCommand("get-operations");
     mewbasRequest.SetData(requestData);
-    mewbasRequest.ChangeJWT(jwt);
 
     return mewbasRequest;
 }
 
-Request Request::StatusChange(int sale_id, QString status, QString description, QString hash, QString jwt)
+Request Request::ConfirmTransaction(int sale_id )
+{
+    QJsonObject requestData;
+    requestData["sale_id"] = sale_id;
+    requestData["status"] = "done";
+
+    Request mewbasRequest;
+    mewbasRequest.SetService("atol");
+    mewbasRequest.SetCommand("confirm-transaction");
+    mewbasRequest.SetData(requestData);
+
+    return mewbasRequest;
+}
+
+Request Request::CancelTransaction(int sale_id, QString status, QString description )
 {
     QJsonObject requestData;
 
+    requestData["sale_id"] = sale_id;
     requestData["status"] = status;
     requestData["description"] = description;
 
-    if ( hash.isEmpty() == false )
-    {
-        requestData["hash"] = hash;
-        requestData["by_hash"] = true;
-    }
-    else
-    {
-        requestData["id"] = sale_id;
-    }
-
     Request mewbasRequest;
-    mewbasRequest.SetService("sales");
-    mewbasRequest.SetCommand("change");
+    mewbasRequest.SetService("atol");
+    mewbasRequest.SetCommand("decline-transaction");
     mewbasRequest.SetData(requestData);
-    mewbasRequest.ChangeJWT(jwt);
 
     return mewbasRequest;
 }
@@ -128,24 +125,15 @@ Request Request::StatusChangeMultiple(QList<int> sales, QString status, QString 
     QJsonObject requestData;
     QJsonArray requestsSales;
 
-    foreach( int sale_id, sales )
-    {
-        QJsonObject data;
-
-        data["id"] = sale_id;
-        data["status"] = status;
-        data["description"] = description;
-
-        requestsSales.append(data);
-    }
-
-    requestData["sales"] = requestsSales;
+    requestData["sale_id"] = sales.first();
+    requestData["status"] = status;
+    requestData["description"] = description;
 
     Request mewbasRequest;
-    mewbasRequest.SetService("sales");
-    mewbasRequest.SetCommand("changeMultiple");
+    mewbasRequest.SetService("atol");
+    mewbasRequest.SetCommand("confirm-transaction");
     mewbasRequest.SetData(requestData);
-    mewbasRequest.ChangeJWT(jwt);
+    //    mewbasRequest.ChangeJWT(jwt);
 
     qDebug() << QJsonDocument( mewbasRequest.toJson() ).toJson();
 
@@ -156,20 +144,20 @@ Request Request::UpdateRecieptCode(int sale_id, QString code, QString hash, QStr
 {
     QJsonObject requestData;
     requestData["id"] = sale_id;
-    requestData["code_return"] = code;
+    requestData["terminal_code"] = code;
 
     Request mewbasRequest;
-    mewbasRequest.SetService("sales");
-    mewbasRequest.SetCommand("change");
+    mewbasRequest.SetService("salesList");
+    mewbasRequest.SetCommand("update");
 
-    if ( hash.isEmpty() == false )
+    if ( hash.isEmpty() == false && hash.isNull() == false && hash != "null" )
     {
         requestData["hash"] = hash;
         requestData["by_hash"] = true;
     }
 
     mewbasRequest.SetData(requestData);
-    mewbasRequest.ChangeJWT(jwt);
+//    mewbasRequest.ChangeJWT(jwt);
 
     return mewbasRequest;
 }

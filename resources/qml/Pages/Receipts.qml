@@ -28,6 +28,9 @@ Item
 
         function onRecieptsChanged(reciepts)
         {
+            console.log( "Got receipts" )
+            console.log( JSON.stringify( reciepts ) )
+
             allReciepts = reciepts
             visibleReciepts = reciepts
         }
@@ -37,6 +40,8 @@ Item
     {
         allReciepts = RECIEPTS.reciepts
         visibleReciepts = allReciepts
+        console.log( "Got receipts" )
+        console.log( JSON.stringify( RECIEPTS.reciepts ) )
     }
 
     Rectangle
@@ -162,16 +167,18 @@ Item
             model: visibleReciepts
             delegate: Receipt
             {
-                Layout.fillWidth: true
+                width: recieptsList.width
                 height: Presets.defaultHeight + 10
                 task: modelData
                 isEven: index % 2 == 0 ? true : false
 
-                onClicked:
+                onReturnOperation:
                 {
                     returnOptions.task = modelData
                     returnOptions.show()
                 }
+
+                onPrintReceipt: RECIEPTS.print(modelData)
             }
         }
     }

@@ -83,6 +83,8 @@ void Terminal::CheckStatus()
         return;
     }
 
+    qDebug() << "terminal" << m_configuration.terminalDir;
+
     TPayment currentPayment = m_terminalParser.Parse();
 
     if ( QFile::exists( m_configuration.terminalDir + "/P" ) ) {

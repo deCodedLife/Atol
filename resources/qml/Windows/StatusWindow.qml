@@ -33,7 +33,7 @@ ApplicationWindow
     Connections
     {
         target: TRAY
-        onClosed: close()
+        function onClosed() { close() }
     }
 
     Connections
@@ -57,7 +57,7 @@ ApplicationWindow
     {
         target: SERVER
 
-        onStatusChanged:
+        function onStatusChanged()
         {
             status.text = SERVER.status
 
@@ -87,7 +87,7 @@ ApplicationWindow
             cancelDuration.start()
         }
 
-        onTaskEnded: close()
+        function onTaskEnded() { close() }
     }
 
     Rectangle

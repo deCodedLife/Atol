@@ -5,6 +5,12 @@ Server::Server(QObject *parent) : TObject(parent)
     m_isBlocked = false;
     EpayTimeout.SetTicks(1);
 
+    fast_fix.SetTime(1000);
+    fast_fix.configure(fast_fix_thread);
+    fast_fix.moveToThread(&fast_fix_thread);
+
+    fast_fix_thread.start();
+
     logList = QMap<GLOBAL_ERRORS, Log> {
         {CANCELED_BY_OPERATOR, Log{"SERVER", "ERRPR", "Task canceled", "Task was canceled by operator"}},
         {SENDED_TO_PRINT, Log{"SERVER", "INFO", "Task was sended to print.", ""}},
@@ -18,7 +24,7 @@ Server::Server(QObject *parent) : TObject(parent)
     connect(&worker, &HttpWorker::dataRecived, this, &Server::AtolRecived);
 #endif
     connect(&eCash, &Terminal::succsess, this, &Server::printCashcheck);
-    //connect(&eCash, &Terminal::timeout, this, &Server::OperationFailed);
+//    connect(&eCash, &Terminal::timeout, this, &Server::OperationFailed);
     connect(&eCash, &Terminal::gotError, this, &Server::OperationFailed);
     connect(&eCash, &Terminal::codeDetected, this, &Server::handleRecieptCode);
 
@@ -28,9 +34,13 @@ Server::Server(QObject *parent) : TObject(parent)
     connect(this, &Server::taskEnded, &EpayTimeout, &Daemon::Stop);
     connect(this, &Server::taskEnded, &TimeoutDaemon, &Daemon::Stop);
 
-    connect(&TimeoutDaemon, &Daemon::triggered, this, &Server::OperationFailed);
-    connect(&TimeoutDaemon, &Daemon::triggered, this, &Server::cancelPrint);
+//    connect(&TimeoutDaemon, &Daemon::triggered, this, &Server::OperationFailed);
+//    connect(&TimeoutDaemon, &Daemon::triggered, this, &Server::cancelPrint);
     connect(&EpayTimeout, &Daemon::triggered, &eCash, &Terminal::CheckStatus);
+//    connect(&fast_fix, &Timer::timeout, &eCash, &Terminal::CheckStatus);
+
+//    connect(&fast_fix, &Timer::timeout, &fast_fix, &Timer::Resume);
+
     connect(this, &Server::configsUpdated, &eCash, &Terminal::UpdateConfig);
 
     eCash.UpdateConfig(m_configuration);
@@ -45,7 +55,7 @@ void Server::cancelPrint()
 {
     m_isBlocked = true;
     net.Delete(m_configuration.serverAddr + "/api/v2/requests/" + currentTask.uuid);
-    
+
     emit notify( "Ошибка", "Соединение с кассой потеряно. Не проводите операции до устранения неполадок" );
     emit block();
 }
@@ -110,13 +120,17 @@ void Server::printCashcheck()
 
 void Server::cancelOperation()
 {
+    if ( currentTask.status == TASK_SUCCSESS )
+    {
+        return;
+    }
     currentTask.status = TASK_FAIL;
 
-    if (currentTask.ePay && state == CASHBOX)
-    {
-        QThread::currentThread()->msleep(1000 * 5);
-        eCash.Pay(currentTask.ePaySum, OPERATIONS_Return);
-    }
+//    if (currentTask.ePay && state == CASHBOX)
+//    {
+//        QThread::currentThread()->msleep(1000 * 5);
+//        eCash.Pay(currentTask.ePaySum, OPERATIONS_Return);
+//    }
 
     state = STATE_NONE;
 
@@ -142,35 +156,37 @@ QString Server::QMLterminalStatus()
 void Server::GotResponse(QString data)
 {
     Log atolLog;
-    QJsonObject responce = QJsonDocument::fromJson(data.toUtf8()).object();
+    QJsonObject response = QJsonDocument::fromJson(data.toUtf8()).object();
 
-    if ( responce["uuid"].isNull() == false )
+    if ( response.contains( "uuid" ) )
     {
         atolLog = logList[ATOL_RESPOND];
         atolLog.details = data;
 
         Logger::WriteToFile(atolLog);
-
-        return;
     }
 
-    if ( responce["error"].isNull() == false )
+    if ( response.contains( "error" ) && currentTask.status != TASK_SUCCSESS )
     {
-        QJsonObject error = responce["error"].toObject();
-        currentTask.description = error["description"].toString();
+        QJsonObject error = response[ "error" ].toObject();
 
-        atolLog = logList[ATOL_ERROR_RESPOND];
-        atolLog.details = error["description"].toString();
+        if ( error[ "code" ].toInt() != 505 )
+        {
+            currentTask.description = "{ERROR} [" + error[ "code" ].toString() + "] " + error["description"].toString();
 
-        Logger::WriteToFile(atolLog);
-        cancelOperation();
+            atolLog = logList[ATOL_ERROR_RESPOND];
+            atolLog.details = error["description"].toString();
+
+            Logger::WriteToFile(atolLog);
+            cancelOperation();
+        }
     }
 
     currentTask.description = "done";
     currentTask.status = TASK_SUCCSESS;
 
-    emit taskEnded();
     emit updateStatus(currentTask);
+    emit taskEnded();
 }
 
 void Server::OperationFailed(QString description)
@@ -209,50 +225,50 @@ void Server::HttpWorkerRecived(QString from, QJsonObject response)
 void Server::AtolRecived(QJsonObject response)
 {
 
-    return;
+//    return;
 
-    if ( m_isBlocked )
-    {
-        return;
-    }
+//    if ( m_isBlocked )
+//    {
+//        return;
+//    }
 
-    QJsonArray results = response["results"].toArray();
-    QJsonObject result = results[0].toObject()["error"].toObject();
+//    QJsonArray results = response["results"].toArray();
+//    QJsonObject result = results[0].toObject()["error"].toObject();
 
-    currentTask.status = result["code"].toInt() == 0 ? TASK_SUCCSESS : TASK_FAIL;
-    currentTask.description = result["description"].toString();
+//    currentTask.status = result["code"].toInt() == 0 ? TASK_SUCCSESS : TASK_FAIL;
+//    currentTask.description = result["description"].toString();
 
-    if ( results[0].toObject()["status"] != "ready" && results[0].toObject()["status"] != "error" )
-    {
-        if ( results[0].toObject()["status"] != "wait" && results[0].toObject()["status"] != "inProgress" )
-        {
-            Log httpLog = logList[ATOL_CASHBOX_ERROR];
-            httpLog.details = currentTask.description;
-            Logger::WriteToFile(httpLog);
+//    if ( results[0].toObject()["status"] != "ready" && results[0].toObject()["status"] != "error" )
+//    {
+//        if ( results[0].toObject()["status"] != "wait" && results[0].toObject()["status"] != "inProgress" )
+//        {
+//            Log httpLog = logList[ATOL_CASHBOX_ERROR];
+//            httpLog.details = currentTask.description;
+//            Logger::WriteToFile(httpLog);
 
-            currentTask.status = TASK_FAIL;
-            cancelOperation();
-        }
+//            currentTask.status = TASK_FAIL;
+//            cancelOperation();
+//        }
 
-        return;
-    }
+//        return;
+//    }
 
-    Log httpLog = logList[ATOL_CASHBOX_ERROR];
-    httpLog.type = currentTask.status == TASK_SUCCSESS ? "INFO" : "ERROR";
-    httpLog.details = currentTask.description;
-    Logger::WriteToFile(httpLog);
+//    Log httpLog = logList[ATOL_CASHBOX_ERROR];
+//    httpLog.type = currentTask.status == TASK_SUCCSESS ? "INFO" : "ERROR";
+//    httpLog.details = currentTask.description;
+//    Logger::WriteToFile(httpLog);
 
-    if ( currentTask.status == TASK_FAIL )
-    {
-        cancelOperation();
-        return;
-    }
+//    if ( currentTask.status == TASK_FAIL )
+//    {
+//        cancelOperation();
+//        return;
+//    }
 
-    emit taskEnded();
-    emit updateStatus(currentTask);
+//    emit taskEnded();
+//    emit updateStatus(currentTask);
 }
 
-void Server::qmlRestoreServer() 
+void Server::qmlRestoreServer()
 {
     emit restore();
 }

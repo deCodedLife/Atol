@@ -2,26 +2,27 @@
 
 void Reciepts::remove(QJsonObject task)
 {
-    QJsonObject taskJson = task;
-    taskJson.remove("callbacks");
-    taskJson.remove("time");
-    taskJson.remove("date");
-    taskJson.remove("status");
-    taskJson.remove("active");
-
+    QJsonObject taskJson = clearTask(task);
     QJsonObject request = taskJson["request"].toObject();
     request["type"] = "sellReturn";
-
     taskJson["request"] = request;
     taskJson["uuid"] = taskJson["uuid"].toString().append("HandReturn");
-
     net.Post(m_configuration.serverAddr + "/api/v2/requests", taskJson);
-
     task.insert("active", false);
-
     m_logger.HandleReciept(task);
     m_reciepts.removeAt(search(task));
+    emit recieptsChanged(m_reciepts);
+}
 
+void Reciepts::print(QJsonObject task)
+{
+    QJsonObject taskJson = clearTask(task);
+    QJsonObject request = taskJson["request"].toObject();
+    taskJson["uuid"] = taskJson["uuid"].toString().append("HandPrint");
+    net.Post(m_configuration.serverAddr + "/api/v2/requests", taskJson);
+    task.insert("active", false);
+    m_logger.HandleReciept(task);
+    m_reciepts.removeAt(search(task));
     emit recieptsChanged(m_reciepts);
 }
 
@@ -62,6 +63,7 @@ void Reciepts::loadReciepts()
 
     QString logsFolder = RecieptLogger::getLogPath();
     QStringList logsFiles = QDir(logsFolder).entryList(QStringList() << "*", QDir::Files);
+
 
     foreach( QString fileName, logsFiles )
     {
@@ -113,6 +115,17 @@ int Reciepts::search(QJsonObject task)
     }
 
     return id;
+}
+
+QJsonObject Reciepts::clearTask(QJsonObject task)
+{
+    QJsonObject taskJson = task;
+    taskJson.remove("callbacks");
+    taskJson.remove("time");
+    taskJson.remove("date");
+    taskJson.remove("status");
+    taskJson.remove("active");
+    return taskJson;
 }
 
 QList<QJsonObject> Reciepts::QMLReciepts()

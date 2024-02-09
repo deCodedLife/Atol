@@ -8,6 +8,8 @@
 #include "types/tobject.h"
 #include "types/daemon.h"
 
+#define DEBUG_MODE false
+
 class Mewbas : public TObject
 {
     Q_OBJECT

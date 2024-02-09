@@ -87,7 +87,7 @@ ApplicationWindow
                 Button
                 {
                     id: confirmButton
-                    text: "Возобновить работу"
+                    text: "Ок"
 
                     flat: true
                     enabled: true
@@ -108,6 +108,5 @@ ApplicationWindow
     function reset()
     {
         confirmButton.enabled = false
-        enableConfirmTimer.start()
     }
 }

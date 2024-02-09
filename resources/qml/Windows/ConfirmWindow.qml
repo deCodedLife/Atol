@@ -38,7 +38,7 @@ ApplicationWindow
     Connections
     {
         target: SERVER
-        onTaskEnded: close()
+        function onTaskEnded() { close() }
     }
 
     Rectangle

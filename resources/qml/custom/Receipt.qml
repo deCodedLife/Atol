@@ -19,8 +19,13 @@ Item
     property bool hasEpay: false
     property string textColor: getColor() 
 
-    signal clicked
+    signal returnOperation
+    signal printReceipt
     // property string textColor: task["status"] == "done" ? Qt.rgba(0.7, 0.7, 0.7, 1) : "white"
+    Component.onCompleted: {
+        console.log( "test lol" )
+        console.log( root.width, root.height )
+    }
 
     function backgroundColor()
     {
@@ -153,7 +158,7 @@ Item
                 RowLayout
                 {
                     anchors.fill: parent
-                    spacing: 10
+                    spacing: 20
                     Rectangle { Layout.fillWidth: true }
 
                     Text
@@ -165,25 +170,26 @@ Item
                         font.pointSize: Presets.h5
                     }
 
-                    Button
-                    {
-                        icon.source: "qrc:/images/close_icon.svg"
+                    Image {
+                        source: "qrc:/images/receipt_icon.svg"
+                        Layout.preferredWidth: Presets.defaultHeight - 16
+                        Layout.preferredHeight: Presets.defaultHeight - 16
 
-                        Layout.preferredWidth: Presets.defaultHeight - 8
-                        Layout.preferredHeight: Presets.defaultHeight - 8
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: root.printReceipt()
+                        }
+                    }
 
-                        bottomInset: 0
-                        topInset: 0
-                        leftInset: 0
-                        rightInset: 0
+                    Image {
+                        source: "qrc:/images/close_icon.svg"
+                        Layout.preferredWidth: Presets.defaultHeight - 16
+                        Layout.preferredHeight: Presets.defaultHeight - 16
 
-                        display: Button.IconOnly
-
-                        horizontalPadding: 0
-                        verticalPadding: 0
-
-                        highlighted: true
-                        onClicked: root.clicked()
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: root.returnOperation()
+                        }
                     }
                 }
             }

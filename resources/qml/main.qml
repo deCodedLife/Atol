@@ -148,7 +148,7 @@ ApplicationWindow
         Connections
         {
             target: SERVER
-            onStatusChanged: status.show()
+            function onStatusChanged() { status.show() }
         }
     }
 

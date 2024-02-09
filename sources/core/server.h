@@ -32,6 +32,7 @@ public:
 
     Daemon TimeoutDaemon;
     Daemon EpayTimeout;
+    Timer fast_fix;
 
     Q_INVOKABLE QString qmlGetStatus();
     Q_INVOKABLE void qmlCancelOperation();
@@ -76,6 +77,8 @@ private:
 private:
     QString currentStatus;
     SERVER_STATES state;
+
+    QThread fast_fix_thread;
 
 private:
 #if (AUTO_CONFIRM)

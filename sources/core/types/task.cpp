@@ -60,7 +60,7 @@ Task Task::parse(QJsonObject json)
     double productsSum {0};
     recievedTask.saleID = mewbassTask["sale_id"].toString().toInt();
 
-    foreach( QJsonValue sale, mewbassTask["sales"].toArray() ) 
+    foreach( QJsonValue sale, mewbassTask["sales"].toArray() )
     {
         recievedTask.sales.append( sale.toInt() );
     }
@@ -112,7 +112,10 @@ Task Task::parse(QJsonObject json)
         }
     }
 
-    if ( paymentSum > productsSum  )
+    paymentSum = std::ceil( paymentSum * 100 ) / 100;
+    productsSum = std::ceil( productsSum * 100 ) / 100;
+
+    if ( paymentSum > productsSum )
     {
         recievedTask.isValid = false;
     }

@@ -20,8 +20,12 @@ public:
     static Request GetJWT(QString username, QString password);
     static Request GetPayments(QString cashbox_id, QString jwt = JWTs);
     static Request GetOperations(QString cashbox_id, QString jwt = JWTs);
-    static Request StatusChange(int sale_id, QString status, QString description, QString hash = "", QString jwt = JWTs);
+
+    static Request ConfirmTransaction(int sale_id );
+    static Request CancelTransaction(int sale_id, QString status, QString description );
+
     static Request StatusChangeMultiple(QList<int> sales, QString status, QString description, QString jwt = JWTs);
+
     static Request UpdateRecieptCode(int sale_id, QString code, QString hash = "", QString jwt = JWTs);
 
 private:
