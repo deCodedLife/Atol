@@ -47,6 +47,7 @@ struct Task
     QString hash;
     QString description;
     QString returnCode;
+    QString pay_method;
 
     bool ePay;
     bool isOperation;

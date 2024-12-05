@@ -77,11 +77,11 @@ void Server::GotTask(QJsonObject data)
 {
     currentTask = Task::parse(data);
 
-    if ( currentTask.ePay )
+    if ( currentTask.ePay && ( currentTask.pay_method == "card" || currentTask.pay_method == "parts" ) )
     {
         if ( currentTask.type == OPERATIONS_Return )
         {
-            currentStatus ="Введите код на терминале: " + currentTask.returnCode;
+            currentStatus = "Введите код на терминале: " + currentTask.returnCode;
         }
         else
         {

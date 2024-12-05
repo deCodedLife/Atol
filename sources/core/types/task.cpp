@@ -33,6 +33,7 @@ Task Task::parse(QJsonObject json)
     recievedTask.ePaySum = 0;
     recievedTask.ePay = false;
     recievedTask.isOperation = false;
+    recievedTask.pay_method = mewbassTask["pay_method"].toString();
     recievedTask.hash = mewbassTask["hash"].toString();
     recievedTask.uuid = mewbassRequest["uuid"].toString();
     callback["resultUrl"] = CALLBACK_URL;
